@@ -107,8 +107,8 @@ margin:10px;
   .login-wrapper{
     width: 100%;
     padding: 10px;
-    background-image: url('../../assets/rich-colors-abstract-background.jpg');
-    background-size: cover;
+    /* background-image: url('../../assets/rich-colors-abstract-background.jpg');
+    background-size: cover; */
     
   }
   .form-login-registre{

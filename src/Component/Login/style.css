@@ -107,8 +107,7 @@ margin:10px;
   .login-wrapper{
     width: 100%;
     padding: 10px;
-    background-image: url('../../assets/rich-colors-abstract-background.jpg');
-    background-size: cover;
+ 
     
   }
   .form-login-registre{
@@ -125,4 +124,10 @@ margin:10px;
   }
   
    
+  }
+  @media screen and (max-width:914px) {
+    .form-login-registre {
+      width: 70%;
+      margin: 10px auto;
+  }
   }

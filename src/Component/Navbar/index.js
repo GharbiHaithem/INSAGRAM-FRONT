@@ -53,7 +53,7 @@ const Navbar = () => {
     return (
         <div className='container'>
             <div className='navbar-wrapper'>
-                <div className={`${search ? 'xxx' : 'img-box'}`}>
+                <div className={`${search ? 'xxx' : `${user === null ? 'not-connected' : 'img-box'}`}`}>
                     <img src={insta} style={{ color: "red" }} alt='instagram' />
                 </div>
 

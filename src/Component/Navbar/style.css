@@ -199,8 +199,8 @@ background-color: transparent;
 }
 @media screen and (max-width : 414px) {
     .navbar-wrapper .img-box img {
-        width: 130%;
-        transform: translateY(-7px);
+        width: 40%;
+        transform: translateY(-24px);
         margin-left: -5px;
     }
     .navbar-wrapper .xxx{
@@ -216,6 +216,11 @@ background-color: transparent;
     }
     .navbar-wrapper .search-box {
         width: 200px;
+    }
+    .navbar-wrapper .not-connected img{
+        vertical-align: middle;
+        width: 41%;
+        transform: translateY(3px);
     }
 }
 @media screen and (max-width:280px) {
@@ -237,6 +242,10 @@ background-color: transparent;
         width: 70%;
         transform: translateY(21px);
     }
+    .navbar-wrapper .not-connected img{
+        width: 34%;
+        transform: translateY(23px);
+    }
 }
 .navbar-wrapper .xxx{
     width:60%
@@ -253,4 +262,28 @@ background-color: transparent;
 .navbar-wrapper .search-box {
     width: 631px;
  
+}
+@media screen and (max-width:851px){
+    .navbar-wrapper .img-box img {
+        width: 67%;
+        height: 44px;
+        transform: translateY(-21px);
+        margin-left: 10px;
+    }
+}
+@media screen and (max-width:768px) {
+    .navbar-wrapper .img-box img {
+        width: 129%;
+        height: 44px;
+        transform: translateY(-6px);
+        margin-left: -4px;
+    }
+    .navbar-wrapper .not-connected img{
+        width: 38%;
+        transform: translateY(3px)
+    }
+}
+.navbar-wrapper .not-connected img{
+    width: 35%;
+    transform: translateY(10px);
 }

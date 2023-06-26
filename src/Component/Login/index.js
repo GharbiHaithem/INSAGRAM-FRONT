@@ -67,9 +67,10 @@ useEffect(()=>{
 
 
 <div className='row my-5'>
+<div className='col-md-12 col-sm-12   wwwww mx-auto'  >
     <div className='form-login-registre my-5'>
 
-        <div className='col-md-12 col-sm-12   wwwww mx-auto'  >
+       
             <div className='form-login d-flex flex-column ' >
                 <h5 className='text-center text-dark text-gradient'>Login</h5>
                 <hr />
