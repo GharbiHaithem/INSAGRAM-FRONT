@@ -1,0 +1,36 @@
+.formModal{
+    position: fixed;
+    top: 0;
+    left:0;
+    z-index: 4;
+    background: #0008;
+    width: 100%;
+    height: 100vh;
+    overflow: auto;
+}
+.form{
+    width: 500px;
+    height: 300px !important;
+    background-color: white;
+  
+    margin: 200px auto;
+
+    border-radius: 10px;
+}
+
+body{
+    font-family: 'Poppins', sans-serif !important;
+  }
+  input:focus::placeholder {
+    margin: 10px;
+  }
+  input:focus::placeholder {
+    font-size: 12px; /* Modifier la taille de la police du placeholder */
+    transform: scale(0.8); /* Modifier la taille du placeholder en le réduisant */
+    transform-origin: right top;
+    /* Modifier l'origine de la transformation pour que le placeholder rétrécisse depuis le coin supérieur gauche */
+  }
+  .aaaa:focus{
+    outline-color: transparent;
+    color:rgb(3, 3, 3)
+  }

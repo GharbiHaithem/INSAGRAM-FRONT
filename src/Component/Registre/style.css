@@ -1,0 +1,36 @@
+.register-wrapper{
+    width: 100%;
+    background-image: url('../../assets/rich-colors-abstract-background.jpg');
+    background-size: cover;
+}
+.form-register {
+    /* width: 500px;
+    background: white;
+    padding: 10px 20px;
+  
+    backdrop-filter:blur(15px) ; */
+    width: 40%;
+    margin: 10px auto;
+}
+.form-registre{
+    background: rgba(7, 7, 7, 0.3);
+    margin-top: 50px;
+    backdrop-filter: blur(15px);
+    padding: 20px;
+
+}
+.form-registre > h5{
+    font-size: 20px;
+    font-weight: 900;
+ 
+    background-clip: text;
+  -webkit-text-fill-color: transparent; /* Pour les navigateurs basés sur WebKit */
+  color: transparent; /* Pour les navigateurs basés sur Blink */
+  background-image: linear-gradient(to right,var(--bs-red),var( --bs-warning));
+   }
+   @media screen and (max-width:600px) {
+    .form-register{
+        width: 80%;
+        margin: 10px auto;
+    }
+   }

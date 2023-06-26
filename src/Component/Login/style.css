@@ -1,0 +1,128 @@
+.gap-10{
+    gap:10px
+    }
+    .gap-20{gap:20px}
+    .gap-30{gap:30px}
+    .form-login{
+       
+    
+        /* box-shadow:0 0 10px #416b51 ;
+        padding: 10px 20px;
+        border-radius: 10px;
+         margin: 180px auto;  */ 
+      
+    }
+.login-wrapper{
+    margin: 20px auto;
+    height: 100vh;
+}
+.form-login{
+    background: rgba(0, 0, 0, 0.3);
+    margin-top: 50px;
+    backdrop-filter: blur(15px);
+    padding: 20px;
+}
+    .button{
+ 
+        border: none;
+        color: rgb(255, 255, 255);
+       /* Pour les navigateurs basés sur WebKit */
+        color: transparent; /* Pour les navigateurs basés sur Blink */
+        background-image: linear-gradient(to right, var(--bs-red),var( --bs-warning));
+        font-size: 15px;
+    }      
+
+
+body{
+    height: max-content;
+    overflow-y: scroll;
+}
+/* 
+
+.login-wrapper .circle{
+ width: 120px;
+ height: 120px;
+ border: 0.5px solid #ddd;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+margin:10px;
+ border-radius: 50%;
+ position: relative;
+ animation: propagate 50s linear infinite  ; 
+}
+.login-wrapper .circle2{
+    width: 120px;
+    height: 120px;
+    border: 0.5px solid #ddd;
+   margin:10px;
+    border-radius: 50%;
+    position: relative;
+    animation: propagate 50s linear infinite  ;   
+}
+.login-wrapper .circle3{
+    width: 120px;
+    height: 120px;
+    border: 0.5px solid #ddd;
+   
+    border-radius: 50%;
+    position: relative;
+    animation: propagate 50s linear infinite  ;   
+}
+
+@keyframes propagate {
+    0%{
+        transform: scale(1);
+        opacity: 1;
+    }
+    100%{
+        transform: scale(3);
+        opacity: 0;
+    }
+} */
+   .form-login > h5{
+    font-size: 20px;
+    font-weight: 900;
+ 
+    background-clip: text;
+  -webkit-text-fill-color: transparent; /* Pour les navigateurs basés sur WebKit */
+  color: transparent; /* Pour les navigateurs basés sur Blink */
+  background-image: linear-gradient(to right,var(--bs-red),var( --bs-warning));
+   }
+   body{
+    font-family: 'Poppins', sans-serif;
+  }
+  input{
+    padding: 4px;
+  }
+  ::placeholder {
+    font-family: 'Cairo', sans-serif;
+    letter-spacing: 2px;
+    color: var();
+  }
+
+  .input-form{
+    border: 1px solid var(--color-6f42c1) !important;
+  }
+  .login-wrapper{
+    width: 100%;
+    padding: 10px;
+    background-image: url('../../assets/rich-colors-abstract-background.jpg');
+    background-size: cover;
+    
+  }
+  .form-login-registre{
+    width: 30%;
+    margin: 10px auto;
+  }
+  @media screen and (max-width:600px) {
+   .login-wrapper{
+    width: 100%;
+   }
+   .form-login-registre{
+    width: 100%;
+    margin: 10px auto;
+  }
+  
+   
+  }
