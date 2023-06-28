@@ -1,2 +1,2 @@
 // export const base_url = "http://localhost:5000/api" 
-export const base_url = "https://instagram-3ytj.onrender.com"
+export const base_url = "https://instagram-backend-2irs.onrender.com/"
