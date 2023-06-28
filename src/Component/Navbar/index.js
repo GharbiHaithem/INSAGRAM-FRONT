@@ -68,7 +68,7 @@ const Navbar = () => {
                                 search
                             </span>
                             {search && <CustomerInput className={'search'} style={{ transform: 'translateY(-10px)', position: "relative" }} placeholder={'Search ...'} type={'text'} />}
-                            {search &&<span onClick={()=>setSearch(false)} className="material-symbols-outlined position-absolute" style={{top:20,right:`${isScreenSmall ? '10px' : '221px'}`}}>
+                            {search &&<span onClick={()=>setSearch(false)} className="material-symbols-outlined position-absolute" style={{top:23,right:`${isScreenSmall ? '10px' : '345px'}`}}>
                                 cancel
                             </span> }
                         </div>
@@ -84,8 +84,8 @@ const Navbar = () => {
                                 sms
                             </span>
                         </div>
-                        <Dropdown className={`${isScreenSmall && search ? "d-none" : "d-none"}`}>
-                            <Dropdown.Toggle variant='light' id="dropdown-basic" style={{ width: '50px', height: '50px', borderRadius: '50%', border: "3px solid black", background: "radialGradient(circle, '#ff0000', '#00ff00', '#0000ff')" }}>
+                        <Dropdown className={`${isScreenSmall && search ? "d-none" : "d-block"}`}>
+                            <Dropdown.Toggle variant='light' id="dropdown-basic" style={{ width: '50px',color:'white', height: '50px', borderRadius: '50%', background:"rgb(244 67 54)" }}>
                                 <span style={{ fontWeight: "700" }}>{userState?.lastname[0]}</span>
                             </Dropdown.Toggle>
 

@@ -15,7 +15,21 @@ const createPost = async(data)=>{
    const response = await API.post(`${base_url}/create/post`,data)
     return await response.data
 }
+const allposts = async()=>{
+   const response = await API.get(`${base_url}/getAllPosts`)
+    return await response.data
+}
+const likePost = async(id)=>{
+    const response = await API.put(`${base_url}/like/post/${id}`)
+    console.log(response)
+    return await response.data
+}
+const dislikePost = async(id)=>{
+    const response = await API.put(`${base_url}/dislike/post/${id}`)
+    console.log(response.data)
+    return await response.data
+}
 const postServices = {
-    createPost
+    createPost,allposts,likePost,dislikePost
 }
 export default postServices

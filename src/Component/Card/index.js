@@ -14,7 +14,16 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Swiper, SwiperSlide } from "swiper/react";
 
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+
+import "./style.css";
+import { Navigation } from "swiper";
+import { useDispatch, useSelector } from 'react-redux';
+import { dislikepost, likePost } from '../../features/post/postSlice'
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
@@ -30,19 +39,31 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-export default function RecipeReviewCard() {
+export default function RecipeReviewCard({ item }) {
   const [expanded, setExpanded] = React.useState(false);
-
+  const dispatch = useDispatch()
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  const userState = useSelector(state => state?.auth?.user)
+  const postState = useSelector(state => state?.post?.posts)
 
+  const [isLiked, setIsLiked] = React.useState(false)
+  React.useEffect(()=>{
+    // console.log(userState?._id)
+      if(item?.likes.find((x)=>x === userState?._id)){
+        setIsLiked(true)
+      }
+
+      // console.log(item?.likes.toString())
+      // console.log(isLiked)
+      },[item?.likes,userState?._id])
   return (
-    <Card sx={{ maxWidth: '100%' }}>
+    <Card sx={{ maxWidth: '70%' }} className='mx-auto'>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            R
+            {userState?.lastname[0]}
           </Avatar>
         }
         action={
@@ -50,26 +71,48 @@ export default function RecipeReviewCard() {
             <MoreVertIcon />
           </IconButton>
         }
-        title="Shrimp and Chorizo Paella"
-        subheader="September 14, 2016"
+        title={userState?.firstname + " " + userState?.lastname}
+        subheader={postState?.createdAt}
       />
-      <CardMedia
+      {/* <CardMedia
         component="img"
         height="500"
         image="https://images.pexels.com/photos/7533667/pexels-photo-7533667.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
         alt="Paella dish"
-      />
+      /> */}
+      <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
+        <SwiperSlide>{
+          item && item?.images?.map((_img, index) => {
+            return (<div key={index} style={{ width: '100%', height: '500px' }}>
+              <img src={_img?.url} alt={_img?.public_id} style={{ objectFit: 'cover', width: '100%' }} />
+            </div>)
+          })
+        }
+        {
+          JSON.stringify(isLiked)
+        }
+        </SwiperSlide>
+
+      </Swiper>
       <CardContent>
         <Typography variant="body2" color="text.secondary">
-          This impressive paella is a perfect party dish and a fun meal to cook
-          together with your guests. Add 1 cup of frozen peas along with the mussels,
-          if you like.
+          {item && item?.description}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites">
-          <FavoriteIcon />
-        </IconButton>
+        {isLiked ?
+          <IconButton aria-label="add to favorites" onClick={() => {
+            setIsLiked(!isLiked)
+            dispatch(dislikepost(item?._id))}}>
+            <FavoriteIcon className='text-danger' />
+          </IconButton> :
+          <IconButton aria-label="add to favorites" onClick={() => {
+               setIsLiked(!isLiked)
+               dispatch(likePost(item?._id))
+          }}>
+            <FavoriteIcon />
+          </IconButton>
+        }
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton>

@@ -8,7 +8,15 @@ import Register from './Component/Registre';
 import ForgotPassword from './Component/ForgotPassword';
 import ResetPassword from './Component/ResetPassword';
 import { OpenRoute } from './routers/openroutes';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getAllPosts } from './features/post/postSlice';
+
 function App() {
+  const dispatch = useDispatch()
+  useEffect(()=>{
+    dispatch(getAllPosts())
+     },[dispatch])
   return (
   
 
