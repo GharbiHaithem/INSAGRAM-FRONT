@@ -1,0 +1,27 @@
+.user{
+    display: flex;
+    align-items: center;
+   gap:10px
+}
+.list-comments-wrapper{
+    
+ 
+    padding: 2px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.gap-20{
+    gap:20px
+}
+.gap-10{
+    gap:10px
+}
+.x{
+    background-color: rgb(238, 236, 236);
+    height: max-content;
+}
+@media screen and (max-width: 400px){
+ 
+}

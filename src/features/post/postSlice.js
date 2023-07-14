@@ -9,6 +9,7 @@ const initState= {
 
 }
 export const createposts = createAsyncThunk('/post/create',async(data,thunkAPI)=>{
+    console.log(data)
     try {
         return await postService.createPost(data)
     } catch (error) {
@@ -22,16 +23,16 @@ export const getAllPosts = createAsyncThunk('/post/getall',async(thunkAPI)=>{
         return thunkAPI.rejectWithValue(error)
     }
 })
-export const likePost = createAsyncThunk('/post/like',async(id,thunkAPI)=>{
+export const likedislikePost = createAsyncThunk('/post/likedislike',async(data,thunkAPI)=>{
     try {
-        return await postService.likePost(id)
+        return await postService.likedislikePost(data)
     } catch (error) {
         return thunkAPI.rejectWithValue(error)
     }
 })
-export const dislikepost = createAsyncThunk('/post/dislike',async(id,thunkAPI)=>{
+export const deletePost = createAsyncThunk('/post/delete',async(id,thunkAPI)=>{
     try {
-        return await postService.dislikePost(id)
+        return await postService.deletePost(id)
     } catch (error) {
         return thunkAPI.rejectWithValue(error)
     }
@@ -75,35 +76,38 @@ const postSlice = createSlice({
             state.message = action.payload    
 
         })
-        .addCase(likePost.pending,(state,action)=>{
-            state.isLoading = false
-        })
-        .addCase(likePost.fulfilled,(state,action)=>{
-            state.isLoading=false
-            state.isSuccess=true
-            state.isError=false
-            state.likes = action.payload
-        })
-        .addCase(likePost.rejected,(state,action)=>{
-            state.isLoading = false
-            state.isSuccess = false
-            state.isError=true
-            state.message = action.payload
-        })
-        .addCase(dislikepost.pending,(state)=>{
+       
+        .addCase(likedislikePost.pending,(state)=>{
             state.isLoading = true
-        }).addCase(dislikepost.fulfilled,(state,action)=>{
+        }).addCase(likedislikePost.fulfilled,(state,action)=>{
             state.isLoading = false
             state.isSuccess = true
             state.isError = false
             state.dislike = action.payload 
 
-        }).addCase(dislikepost.rejected,(state,action)=>{
+        }).addCase(likedislikePost.rejected,(state,action)=>{
             state.isLoading = false
             state.isSuccess = false
             state.isError = true
             state.message = action.payload
         })
+        .addCase(deletePost.pending,(state)=>{
+            state.isLoading = true
+        }).addCase(deletePost.fulfilled,(state,action)=>{
+            state.isLoading = false
+            state.isSuccess = true
+            state.isError = false
+            state.postDeleted = action.payload.post 
+            state.commentsDeleted = action.payload.comments
+
+        }).addCase(deletePost.rejected,(state,action)=>{
+            state.isLoading = false
+            state.isSuccess = false
+            state.isError = true
+            state.message = action.payload
+        })
+        
+
 
     }
 })

@@ -6,7 +6,7 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import Collapse from '@mui/material/Collapse';
-import Avatar from '@mui/material/Avatar';
+
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { red } from '@mui/material/colors';
@@ -23,7 +23,15 @@ import "swiper/css/navigation";
 import "./style.css";
 import { Navigation } from "swiper";
 import { useDispatch, useSelector } from 'react-redux';
-import { dislikepost, likePost } from '../../features/post/postSlice'
+import { deletePost, getAllPosts, likedislikePost } from '../../features/post/postSlice'
+import Comment from '../Comment';
+import ListComments from '../ListComments';
+import io from 'socket.io-client';
+import Dropdown from 'react-bootstrap/Dropdown';
+import moment from "moment"
+import Avatar from '../Avatar';
+import {MdDeleteForever} from 'react-icons/md'
+import {MdOutlineEditNote} from 'react-icons/md'
 interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
@@ -45,35 +53,102 @@ export default function RecipeReviewCard({ item }) {
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
+  const [isScreenSmall, setIsScreenSmall] = React.useState(false);
+
+    
+  React.useEffect(() => {
+      const handleResize = () => {
+          const isSmall = window.matchMedia("(max-width: 600px)").matches;
+          setIsScreenSmall(isSmall);
+      };
+
+      // Ajoute un écouteur d'événement pour détecter les changements de taille d'écran
+      window.addEventListener("resize", handleResize);
+
+      // Vérifie la taille de l'écran au chargement initial de la page
+      handleResize();
+      console.log(isScreenSmall)
+      // Nettoie l'écouteur d'événement lorsque le composant est démonté
+      return () => {
+          window.removeEventListener("resize", handleResize);
+      };
+
+  }, [isScreenSmall]);
   const userState = useSelector(state => state?.auth?.user)
   const postState = useSelector(state => state?.post?.posts)
-
+  const [showComments, setShowComments] = React.useState(false)
   const [isLiked, setIsLiked] = React.useState(false)
-  React.useEffect(()=>{
+  const user = useSelector(state => state?.auth?.user?.firstname)
+  const liketime =  useSelector(state=>state?.post?.dislike?.datelike) 
+  const [_user, setUser] = React.useState(user ? user : "")
+  const [socket, setSocket] = React.useState(null)
+  React.useEffect(() => {
+    setSocket(io('http://localhost:5000'));
+  }, [])
+  const[authorized,setAuthorized] = React.useState(false)
+ React.useEffect(()=>{
+if(userState?._id === item?.postedBy?._id){
+  setAuthorized(true)
+}else{
+  setAuthorized(false)
+}
+ },[userState?._id,item?.postedBy?._id])
+  const userId = useSelector(state=>state?.auth?.user?._id)
+  React.useEffect(() => {
     // console.log(userState?._id)
-      if(item?.likes.find((x)=>x === userState?._id)){
-        setIsLiked(true)
-      }
+    const res =  (item?.likes?.map((x) => x?._id === userId)) 
+      // setIsLiked(true)
+console.log(res[0]);
+if(res[0]=== true){
+  setIsLiked(!isLiked)
+}
+    
 
-      // console.log(item?.likes.toString())
-      // console.log(isLiked)
-      },[item?.likes,userState?._id])
+    // console.log(item?.likes.toString())
+    // console.log(isLiked)
+  }, [item?.likes, userId])
+  const nblikes = item?.likes?.length
+  React.useEffect(()=>{
+   if(socket !== null){
+    socket.on("receive-like-dislike",(data)=>{
+      console.log(data)
+      dispatch(likedislikePost(data))
+   
+    })
+   }
+
+  },[dispatch,socket])
   return (
-    <Card sx={{ maxWidth: '70%' }} className='mx-auto'>
+    
+    <Card className='col-md-12 col-sm-12'  >
+      
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            {userState?.lastname[0]}
-          </Avatar>
+          <Avatar showname={true} styled={{fontSize: isScreenSmall ? "12px" : "23px" }}  widthAndHeight={{width:isScreenSmall ? "60px" : "80px",height:isScreenSmall ? "60px" : "80px"}} com={item?.postedBy} link={`/profile/${item?.postedBy?._id}`} styledavatar={{borderRadius:"50%",width:'30px',height:'30px',background:"rgb(244 67 54)",color:"white"}}/>
         }
         action={
           <IconButton aria-label="settings">
-            <MoreVertIcon />
+
+            <Dropdown>
+              <Dropdown.Toggle variant="" id="dropdown-basic">
+                <MoreVertIcon />
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+              {authorized &&  <Dropdown.Item className='p-3'  href="#/action-1" onClick={()=>{dispatch(deletePost(item?._id))
+              setTimeout(()=>{
+               dispatch(getAllPosts())
+              },2000)
+              }}><MdDeleteForever className='fs-4'/>&nbsp;&nbsp;Delete</Dropdown.Item>}
+              {authorized &&  <Dropdown.Item className='p-3'  href="#/action-2"><MdOutlineEditNote className='fs-4'/>&nbsp;&nbsp;Edit</Dropdown.Item>}
+                <Dropdown.Item className='p-3'  href="#/action-3"></Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </IconButton>
         }
-        title={userState?.firstname + " " + userState?.lastname}
+      
         subheader={postState?.createdAt}
       />
+
       {/* <CardMedia
         component="img"
         height="500"
@@ -81,17 +156,31 @@ export default function RecipeReviewCard({ item }) {
         alt="Paella dish"
       /> */}
       <Swiper navigation={true} modules={[Navigation]} className="mySwiper">
-        <SwiperSlide>{
+        {
           item && item?.images?.map((_img, index) => {
-            return (<div key={index} style={{ width: '100%', height: '500px' }}>
-              <img src={_img?.url} alt={_img?.public_id} style={{ objectFit: 'cover', width: '100%' }} />
-            </div>)
+            return (
+              <SwiperSlide key={index} style={{ width: '100%', height: '600px' }}>
+                <img src={_img?.url} alt={_img?.public_id} style={{ objectFit: 'cover', width: '100%' }} />
+              </SwiperSlide>
+            )
           })
         }
         {
-          JSON.stringify(isLiked)
+          (item?.videos?.map((_video, index) => {
+            return (
+              <SwiperSlide key={index} style={{ width: '100%', height: '300px' }}>
+
+                <video className='video_player' controls width={'100%'} height="100%">
+                  <source src={_video?.url} type="video/mp4" />
+                  {/* Ajoutez d'autres sources vidéo ici pour une compatibilité multi-format */}
+                  Votre navigateur ne prend pas en charge la balise vidéo.
+                </video>
+
+              </SwiperSlide>
+            )
+          }))
         }
-        </SwiperSlide>
+
 
       </Swiper>
       <CardContent>
@@ -100,60 +189,74 @@ export default function RecipeReviewCard({ item }) {
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        {isLiked ?
-          <IconButton aria-label="add to favorites" onClick={() => {
-            setIsLiked(!isLiked)
-            dispatch(dislikepost(item?._id))}}>
-            <FavoriteIcon className='text-danger' />
-          </IconButton> :
-          <IconButton aria-label="add to favorites" onClick={() => {
-               setIsLiked(!isLiked)
-               dispatch(likePost(item?._id))
-          }}>
-            <FavoriteIcon />
+
+        <div className='d-flex align-items-center gap-30'>
+          {isLiked ?
+            <IconButton aria-label="add to favorites" onClick={() => {
+              setIsLiked(!isLiked)
+              const data = {
+                id: item?._id,
+                userId: userState?._id
+              }
+              dispatch(likedislikePost(data))
+              setTimeout(()=>{
+              dispatch(getAllPosts())
+              },300)
+             
+              socket.emit('like-dislike',{
+                id:item?._id,
+                userId:userState?._id,
+                receivedId:[...userState?.followers,userState?._id]
+              })
+              
+             
+            }}>
+              <FavoriteIcon className='text-danger' />&nbsp;  {JSON.stringify(nblikes)}
+            </IconButton> :
+            <IconButton aria-label="add to favorites" onClick={() => {
+              setIsLiked(!isLiked)
+              const data = {
+                id: item?._id,
+                userId: userState?._id
+              }
+              dispatch(likedislikePost(data))
+              setTimeout(()=>{
+                dispatch(getAllPosts())
+                },300)
+              socket.emit("sendNotification", {
+                senderName: _user,
+                receivedName: item?.postedBy?.firstname,
+                type: "like",
+                datenotif:moment(liketime).fromNow()
+              })
+              socket.emit('like-dislike',{
+                id:item?._id,
+                userId:userState?._id,
+                receivedId:[...userState?.followers,userState?._id]
+              })
+
+           
+            }}>
+              <FavoriteIcon />&nbsp; {JSON.stringify(nblikes)}
+            </IconButton>
+           
+          }
+       
+          <IconButton aria-label="share">
+            <ShareIcon />
           </IconButton>
-        }
-        <IconButton aria-label="share">
-          <ShareIcon />
-        </IconButton>
-        <ExpandMore
-          expand={expanded}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <ExpandMoreIcon />
-        </ExpandMore>
+
+
+          <span className="material-symbols-outlined fs-2" onClick={() => setShowComments(!showComments)} style={{ cursor: 'pointer' }}>
+            mark_unread_chat_alt
+          </span>
+
+        </div>
+
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <Typography paragraph>Method:</Typography>
-          <Typography paragraph>
-            Heat 1/2 cup of the broth in a pot until simmering, add saffron and set
-            aside for 10 minutes.
-          </Typography>
-          <Typography paragraph>
-            Heat oil in a (14- to 16-inch) paella pan or a large, deep skillet over
-            medium-high heat. Add chicken, shrimp and chorizo, and cook, stirring
-            occasionally until lightly browned, 6 to 8 minutes. Transfer shrimp to a
-            large plate and set aside, leaving chicken and chorizo in the pan. Add
-            pimentón, bay leaves, garlic, tomatoes, onion, salt and pepper, and cook,
-            stirring often until thickened and fragrant, about 10 minutes. Add
-            saffron broth and remaining 4 1/2 cups chicken broth; bring to a boil.
-          </Typography>
-          <Typography paragraph>
-            Add rice and stir very gently to distribute. Top with artichokes and
-            peppers, and cook without stirring, until most of the liquid is absorbed,
-            15 to 18 minutes. Reduce heat to medium-low, add reserved shrimp and
-            mussels, tucking them down into the rice, and cook again without
-            stirring, until mussels have opened and rice is just tender, 5 to 7
-            minutes more. (Discard any mussels that don&apos;t open.)
-          </Typography>
-          <Typography>
-            Set aside off of the heat to let rest for 10 minutes, and then serve.
-          </Typography>
-        </CardContent>
-      </Collapse>
+
+      <ListComments post={item} />
+      {showComments && <Comment socket={socket} item={item} />}
     </Card>
   );
 }

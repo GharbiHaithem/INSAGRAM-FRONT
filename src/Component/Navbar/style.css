@@ -287,3 +287,12 @@ background-color: transparent;
     width: 35%;
     transform: translateY(10px);
 }
+@media screen and (max-width: 400px) {
+    .drop-down {
+        color: red;
+    }
+ .menu-p{
+  width: 100%;
+ 
+    }
+}

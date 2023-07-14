@@ -1,0 +1,32 @@
+.user-profile span{
+    font-family: 'Poppins' , sans-serif;
+    font-size: 15px;
+    font-size: 300;
+}
+.details-user{
+    display: grid;
+    gap:20px;
+    grid-template-columns: 40% 20% 20% 20%;
+}
+.couverture-profile{
+    height: 250px;
+    border: 5px solid rgb(255, 255, 255);
+    width: 100%;
+    border-top-left-radius: 10px; /* Coin supérieur gauche */
+    border-top-right-radius: 10px; /* Coin supérieur droit */
+}
+.couverture-profile img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-left-radius: 10px; /* Coin supérieur gauche */
+    border-top-right-radius: 10px; /* Coin supérieur droit */
+}
+.bord{
+    border-top: 0.5px solid #dad6d6;
+    height: 100px;
+    width: 100%;
+    border-bottom: 0.5px solid #dad6d6;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+}

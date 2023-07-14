@@ -2,9 +2,9 @@ import axios from 'axios'
 import { base_url } from '../../util/baseUrl';
 const API = axios.create({baseURL:base_url});
 API.interceptors.request.use((req)=>{
-   if(localStorage.getItem('customer')){
+   if(localStorage.getItem('user')){
     req.headers.authorization =`Bearer ${
-        JSON.parse(localStorage.getItem("customer")).token
+        JSON.parse(localStorage.getItem("user")).token
     }`
    }
    return req;
@@ -28,7 +28,47 @@ const forgotPassword = async(mail)=>{
     console.log(response.data)
     return await response.data
  }
+ const allusers= async()=>{
+    const response = await axios.get(`${base_url}/getallusers`)
+    console.log(response.data)
+    return await response.data
+ }
+ const suggestionusers= async()=>{
+    const response = await API.get(`${base_url}/suggest-user`)
+   
+    return await response.data
+ }
+ const followuser = async(id)=>{
+    const response = await API.put(`${base_url}/follow/${id}`)
+   
+    return await response.data
+ }
+ const unfollowuser = async(id)=>{
+    const response = await API.put(`${base_url}/unfollow/${id}`)
+   
+    return await response.data
+ }
+ const refreshuser = async()=>{
+    const response = await API.get(`${base_url}/refreshuser`)
+
+    return await response.data
+ }
+ const user = async(id)=>{
+    const response = await API.get(`${base_url}/user/${id}`)
+   
+    return await response.data
+ }
+ const searchUser = async(searchQuery)=>{
+   const response = await API.get(`${base_url}/searchUser?searchQuery=${searchQuery}`)
+
+   return await response.data
+}
+const updateProfileUser = async(data)=>{
+   const response = await API.put(`${base_url}/updateProfile`,data)
+   console.log(response.data)
+   return await response.data
+}
 const servicesAuth = {
-    createUser,loginUser,forgotPassword
+    createUser,loginUser,forgotPassword,allusers,suggestionusers,followuser,refreshuser,unfollowuser,user,searchUser,updateProfileUser
 }
 export default servicesAuth

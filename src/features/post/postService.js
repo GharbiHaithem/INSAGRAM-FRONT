@@ -13,23 +13,27 @@ API.interceptors.request.use((req)=>{
 const createPost = async(data)=>{
     console.log(data)
    const response = await API.post(`${base_url}/create/post`,data)
+ 
     return await response.data
 }
 const allposts = async()=>{
    const response = await API.get(`${base_url}/getAllPosts`)
     return await response.data
 }
-const likePost = async(id)=>{
-    const response = await API.put(`${base_url}/like/post/${id}`)
-    console.log(response)
+
+const likedislikePost = async(data)=>{
+    console.log(data)
+    const response = await API.put(`${base_url}/likedislike/post/${data.id}`,data)
+  
     return await response.data
 }
-const dislikePost = async(id)=>{
-    const response = await API.put(`${base_url}/dislike/post/${id}`)
-    console.log(response.data)
+const deletePost = async(id)=>{
+    
+    const response = await API.delete(`${base_url}/delete/post/${id}`)
+  
     return await response.data
 }
 const postServices = {
-    createPost,allposts,likePost,dislikePost
+    createPost,allposts,likedislikePost,deletePost
 }
 export default postServices

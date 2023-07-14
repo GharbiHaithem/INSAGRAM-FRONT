@@ -10,12 +10,13 @@ import { useNavigate } from 'react-router-dom'
 import { deleteImg, resetState, upload } from '../../features/upload/upload.slice'
 import { createposts, getAllPosts } from '../../features/post/postSlice'
 import Spinner from '../Spinner'
+import { upload_vd } from '../../features/uploadVideo/uploadSlice'
 const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
     const myElementRef = useRef(null)
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const loadingUploadImgPost = useSelector(state=>state?.upload?.isLoading)
+    const loadingUploadImgPost = useSelector(state => state?.upload?.isLoading)
 
 
     const handleClick = (event) => {
@@ -34,7 +35,8 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
 
         initialValues: {
             description: '',
-            images: ''
+            images: '',
+            videos: ''
         },
 
         validationSchema: schema,
@@ -42,9 +44,9 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
         onSubmit: (values) => {
             alert(JSON.stringify(values, null, 2))
             dispatch(createposts(values))
-            
+
             setTimeout(() => {
-               dispatch(getAllPosts())
+                dispatch(getAllPosts())
                 closeModal()
                 dispatch(resetState())
             }, 1000)
@@ -54,6 +56,7 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
         }
     })
     const uploadState = useSelector(state => state?.upload?.images)
+    const uploadVDState = useSelector(state => state?.upload_vd?.videos)
     let img = []
     uploadState?.forEach((elem) => {
         img.push({
@@ -61,12 +64,23 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
             url: elem.url
         })
     })
+
+    let vdo = []
+    uploadVDState?.forEach((elem) => {
+        vdo.push({
+            public_id: elem.public_id,
+            url: elem.url
+        })
+    })
+    useEffect(() => {
+        formik.values.videos = vdo;
+    }, [formik.values, vdo])
     useEffect(() => {
         formik.values.images = img;
     }, [formik.values, img])
-const Idimg =(e)=>{
-dispatch(deleteImg(e))
-}
+    const Idimg = (e) => {
+        dispatch(deleteImg(e))
+    }
     return (
         <div className='formModal' ref={myElementRef} onClick={handleClick}>
 
@@ -81,20 +95,33 @@ dispatch(deleteImg(e))
                         {
                             uploadState && uploadState?.map((item, index) => {
                                 return (
-                                
-                                  (uploadState?.length <3 ) ?
-                                  <>
-                                    <div key={index} className='image position-relative'>
-                                      
-                                 
-                                   <span onClick={(e)=>Idimg(item?.public_id)} className="material-symbols-outlined text-danger fs-2 position-absolute" style={{top:0,right:0}}>
-                                        cancel
-                                    </span>
-                                    <img className='img-fluid ' style={{ height: '150px' }} src={item?.url} alt={item?.public_id} />
+
+                                    (uploadState?.length < 3) ?
+                                        <>
+                                            <div key={index} className='image position-relative'>
+
+
+                                                <span onClick={(e) => Idimg(item?.public_id)} className="material-symbols-outlined text-danger fs-2 position-absolute" style={{ top: 0, right: 0 }}>
+                                                    cancel
+                                                </span>
+                                                <img className='img-fluid ' style={{ height: '150px' }} src={item?.url} alt={item?.public_id} />
+                                            </div>
+                                        </>
+                                        : ("")
+                                )
+                            })
+                        }
+                        {
+                            uploadVDState && uploadVDState?.map((item, index) => {
+                                return (
+                                    <div key={index}>
+                                        <video controls width="300" height="160">
+                                            <source src={item?.url} type="video/mp4" />
+                                            {/* Ajoutez d'autres sources vidéo ici pour une compatibilité multi-format */}
+                                            Votre navigateur ne prend pas en charge la balise vidéo.
+                                        </video>
                                     </div>
-                                    </>
-                             : ("") 
-                               )
+                                )
                             })
                         }
                     </div>
@@ -117,7 +144,17 @@ dispatch(deleteImg(e))
                         <button type='submit' className='text-start btn btn-outline-primary  mx-3 mb-4 ' disabled={loadingUploadImgPost ? true : false} >SHARE{loadingUploadImgPost && <Spinner className={'dot-container'} />}</button>
                         <span className="material-symbols-outlined fs-1 position-relative mb-4">
                             attach_file
-                            <Dropzone onDrop={acceptedFiles => dispatch(upload(acceptedFiles))}>
+                            <Dropzone onDrop={acceptedFiles => {
+
+                                (acceptedFiles.find((x) => {
+                                    console.log(x.type)
+                                    if (x.type === "image/jpeg") {
+                                        dispatch(upload(acceptedFiles))
+                                    } else {
+                                        dispatch(upload_vd(acceptedFiles))
+                                    }
+                                }))
+                            }}>
                                 {({ getRootProps, getInputProps }) => (
                                     <section>
                                         <div {...getRootProps()}>
