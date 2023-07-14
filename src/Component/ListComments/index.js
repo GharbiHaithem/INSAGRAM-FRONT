@@ -7,7 +7,7 @@ const ListComments = ({ post }) => {
         <>
         {post?.comments?.map((com,index)=>{
             return(<div key={index}>
-            <Avatar styledavatar={{borderRadius:"50%",width:'30px',height:'30px',background:"rgb(244 67 54)",color:"white"}} styled={{fontSize:'12px'}} com={com?.user} show={true} />
+            <Avatar widthAndHeight={{width:'50px',height:'50px'}} styledavatar={{borderRadius:"50%",width:'30px',height:'30px',background:"rgb(244 67 54)",color:"white"}} styled={{fontSize:'12px'}} com={com?.user} show={true} />
             <DisplayComment com={com} />
             </div>) 
        

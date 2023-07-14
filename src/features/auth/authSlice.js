@@ -8,7 +8,8 @@ const initState = {
     isSuccess: false,
     message: '',
     isLogin: false,
-    dataUserId:[]
+    dataUserId:[],
+    userUpdated :false
 }
 console.log(initState.user)
 export const createUser = createAsyncThunk('/auth/create', async (data, thunkAPI) => {
@@ -285,18 +286,21 @@ export const authSlice = createSlice({
             })
             .addCase(updateProfileUser.pending,(state,action)=>{
                 state.isLoading = true
+                state.userUpdated=false
             })
             .addCase(updateProfileUser.fulfilled,(state,action)=>{
                 console.log(action.payload)
                 state.isLoading = false
                 state.isSuccess=true
                 state.user = action.payload
+                state.userUpdated = true
             })
             .addCase(updateProfileUser.rejected,(state,action)=>{
                 state.isLoading = false
                 state.isError=true
                 state.isSuccess = false
                 state.message = action.payload
+                state.userUpdated = false
             })
             .addCase(logout,(state)=>{
                 state.isSuccess=true

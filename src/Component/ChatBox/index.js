@@ -23,9 +23,10 @@ const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage}) =>
    
     useEffect(()=>{
 // alert(JSON.stringify({aaaaaaaaaaaa:chat?._id}))
+console.log(userDataId)
 if(userDataId){
     let filteredArray= [];
-    dispatch(getAuser(userDataId))
+    // dispatch(getAuser(userDataId))
      filteredArray = dataUserId.filter(item => item._id === userDataId);
     setFilterData(filteredArray)
     dispatch(getchatUser(filteredArray[0]?._id))
@@ -50,13 +51,13 @@ useEffect(() => {
   }, [chat, userDataId,chatConv]);
   
   useEffect(() => {
-    if (chatId !== undefined) {
+    if (chatId !== null && userDataId) {
       console.log(chatId);
       dispatch(getmessage(chatId));
     }else if(chatId === undefined){
        dispatch(getmessage(chatConv?._id))
     }
-  }, [chatId, dispatch,chatConv?._id]);
+  }, [chatId, dispatch,chatConv?._id,userDataId]);
 console.log(chatId)
 // useEffect(() => {
 //     if (chatId !== undefined) {

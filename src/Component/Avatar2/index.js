@@ -13,6 +13,7 @@ import { getAllPosts } from '../../features/post/postSlice'
 const Avatar2 = ({ className, style, user, styled, styledavatar, font_size, hover, noname,showForm,configState,closeModal }) => {
   const { id } = useParams()
   const imagestate = useSelector(state=>state?.upload?.images)
+  const userUpdate = useSelector(state=>state?.auth?.userUpdated)
   const [isHovered, setIsHovered] = useState(false);
   const [onUpload,setOnUpload] = useState(false)
   const dispatch = useDispatch()
@@ -65,12 +66,16 @@ const handleSubmit =(e)=>{
 
 
 setTimeout(()=>{
-  closeModal()
-  dispatch(resetState())
-  setImage([])
-  dispatch(getAllPosts())
-dispatch(refreshdata())
-},3000)
+ 
+  if(imagestate.length !== 0 ){
+    dispatch(getAllPosts())
+    dispatch(refreshdata())
+   dispatch(resetState())
+   setImage([])
+     
+  }
+console.log(userUpdate)
+  },3000)
 
 
 }

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CustomerInput from '../CustomerInput'
 import './style.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { createconv, getchatUser } from '../../features/chat/chatSlice'
+import { createconv, getchatUser, getmessage } from '../../features/chat/chatSlice'
 import Conversation from '../Conversation'
 import ChatBox from '../ChatBox'
 import { getAuserBySearch } from '../../features/auth/authSlice'
@@ -84,11 +84,12 @@ const Chat = ({ socket }) => {
 
       socket.on("receive-message", (data) => {
         console.log(data)
+       
         setReceiveMessage(data)
       })
     }
 
-  }, [socket])
+  }, [socket,dispatch])
   useEffect(() => {
     if (search) {
       dispatch(getAuserBySearch(search))

@@ -11,8 +11,20 @@ const Conversation = ({chatConversation,userId,isFirstChat,setUserDataId,userDat
     const  user = chatConversation?.members?.find((id)=>id !== userId)
     console.log(user);
     setProfileUser(user)
-   if(chatConversation !== null) dispatch(getAuser(user))
-    },[chatConversation,userId,dispatch])
+    if (chatConversation !== null && profileUser === null) {
+      let isDispatched = false;
+  
+      const checkUser = async () => {
+        // Effectue une vérification supplémentaire pour éviter les dispatchs multiples
+        if (!isDispatched) {
+          isDispatched = true;
+          await dispatch(getAuser(user));
+        }
+      };
+  
+      checkUser();
+    }
+    },[chatConversation, dispatch, userId, profileUser])
     const data = useSelector(state=>state?.auth?.dataUserId)
     console.log(data)
     const uniqueIds = [...new Set(data.map(x => x.id))];

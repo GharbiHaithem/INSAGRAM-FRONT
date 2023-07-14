@@ -118,7 +118,7 @@ onClick={()=>{
             followingUser.length !== 0 ? followingUser?.map((user1,index)=>{
               return(
 <div className='d-flex justify-content-between align-items-center'>
-<Avatar xxx styledP={{padding:'10px'}}  styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user1} styled={{fontSize:'20px'}} />
+<Avatar widthAndHeight={{width:"60px",height:'60px'}} xxx styledP={{padding:'10px'}}  styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user1} styled={{fontSize:'20px'}} />
 
 <Follow user={user1} />
 </div>
@@ -132,7 +132,7 @@ onClick={()=>{
             followersUser.length !==0 ? followersUser?.map((user2,index)=>{
               return(
                 <div className='d-flex justify-content-between align-items-center'>
-<Avatar xxx   styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user2} styled={{fontSize:'20px'}} />
+<Avatar xxx widthAndHeight={{width:"60px",height:'60px'}}  styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user2} styled={{fontSize:'20px'}} />
              <Follow user={user2} />
              </div>
              )
