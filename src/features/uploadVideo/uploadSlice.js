@@ -1,4 +1,4 @@
-import {createAsyncThunk,createSlice} from '@reduxjs/toolkit'
+import {createAction, createAsyncThunk,createSlice} from '@reduxjs/toolkit'
 import uploadServices from './uploadService'
 const initialState = {
     videos :[],
@@ -27,7 +27,7 @@ export const deleteImg = createAsyncThunk('/delete-img',async(id,thunkAPI)=>{
      return thunkAPI.rejectWithValue(error)   
     }
 })
-
+export const resetStateVd = createAction('/resetUploadVd')
 export const upload_vd_Slice = createSlice({
     name:'uploadvideo',
     initialState,
@@ -63,6 +63,11 @@ export const upload_vd_Slice = createSlice({
             state.isError=true
             state.message=action.error
             state.images=[]
+        })
+        .addCase(resetStateVd,(state)=>{
+            state.isLoading = false
+            state.isSuccess=false
+            state.videos = []
         })
     }
 })

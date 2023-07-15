@@ -6,6 +6,8 @@ import * as Yup from 'yup'
 import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../../features/auth/authSlice'
+import backgroundImage from '../../assets/wave.svg'
+import oo from '../../assets/wave (1).svg'
 const Login = () => {
     const dispatch = useDispatch()
     const msg = useSelector(state=>state?.auth?.message)
@@ -62,8 +64,17 @@ useEffect(()=>{
 },[isLogin,navigate])
     return (
 
-    <div className='container'>
-            <div className='login-wrapper '>
+    <div className='container'  style={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        minHeight: '100vh',
+      
+      }}>
+            <div className='login-wrapper '
+          
+            >
 
 
 <div className='row my-5'>
@@ -72,7 +83,7 @@ useEffect(()=>{
 
        
             <div className='form-login d-flex flex-column ' >
-                <h5 className='text-center text-dark text-gradient'>Login</h5>
+                <h5 className='text-center '>Login</h5>
                 <hr />
                 <p className='text-center'></p>
                 <form className='d-flex flex-column gap-10 ' onSubmit={formik.handleSubmit} >
@@ -89,8 +100,8 @@ useEffect(()=>{
 
 
                     <div className='d-flex justify-content-between fs-6'>
-                        <Link style={{ textDecoration: 'none' }} to='/register'>Register</Link>
-                        <Link to={'/forgotpassword'} style={{ textDecoration: 'none', textAlign: 'end', marginBottom: '20px' }}>Forgot Password ?</Link>
+                        <Link style={{ textDecoration: 'none' ,color:"var(--bs-pink)"}} to='/register'>Register</Link>
+                        <Link to={'/forgotpassword'} style={{ textDecoration: 'none', textAlign: 'end', marginBottom: '20px',color:"var(--bs-pink)" }}>Forgot Password ?</Link>
                     </div>
                     <div className='bloc-btn gap-10 flex-column d-flex'>
 {isMessage && <span className='fs-7 p-4 text-uppercase text-light text-center'>{isMessage}</span>}

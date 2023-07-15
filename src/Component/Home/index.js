@@ -69,7 +69,7 @@ const Home = ({socket}) => {
             return <div  key={index} >
             
               <>
-              <Avatar link={`/profile/${user?._id}`} widthAndHeight={{width:'80px' ,height:'80px'}}   styledavatar={{ borderRadius: '50%', width: '30px', height: '30px', background: 'rgb(244 67 54)', color: 'white' }}  com={user} styled={{fontSize:'10px',marginRight:'10px'}}>
+              <Avatar showname={true} link={`/profile/${user?._id}`} widthAndHeight={{width:'80px' ,height:'80px'}}   styledavatar={{ borderRadius: '50%', width: '30px', height: '30px', background: 'rgb(244 67 54)', color: 'white' }}  com={user} styled={{fontSize:'10px',marginRight:'10px'}}>
                <Follow user={user}/>
                 </Avatar>
               </>

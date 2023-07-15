@@ -8,6 +8,7 @@ const Follow = ({user}) => {
     const dispatch = useDispatch()
     const userstate = useSelector(state=>state?.auth?.user)
     useEffect(()=>{
+        console.log(user?._id)
      if(userstate?.following.includes(user?._id )){
         setFollow(true)
      }

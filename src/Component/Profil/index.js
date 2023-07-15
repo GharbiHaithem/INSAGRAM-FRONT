@@ -86,8 +86,10 @@ const[followersState, setFollowersState] = useState(false)
                        <img src={img} alt='' style={{objectFit:"cover"}}  />
                     </div>
                    
-                      <div style={{display:'flex',alignItems:'center',justifyContent:'center',transform:"translateY(-40px)"}}>
+                      <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',transform:"translateY(-40px)"}}>
                       <Avatar2 showForm={showForm} className={'cercles'} styledavatar={{ borderRadius: '50%', width: '80px', height: '80px', background: 'rgb(244 67 54)', color: 'white' }}  user={userProfile} styled={{fontSize:'20px'}}  />
+                     {JSON.stringify(userProfile?._id)}
+                      <Follow  user={userProfile} />
                       </div>
                    <div className='bord'>
 <div style={{borderRight:'2px solid #eee'}} className='text-center d-flex align-items-center justify-content-center' 
@@ -118,9 +120,9 @@ onClick={()=>{
             followingUser.length !== 0 ? followingUser?.map((user1,index)=>{
               return(
 <div className='d-flex justify-content-between align-items-center'>
-<Avatar widthAndHeight={{width:"60px",height:'60px'}} xxx styledP={{padding:'10px'}}  styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user1} styled={{fontSize:'20px'}} />
+<Avatar showname={true} widthAndHeight={{width:"60px",height:'60px'}} xxx styledP={{padding:'10px'}}  styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user1} styled={{fontSize:'20px'}} />
 
-<Follow user={user1} />
+{userstate?._id !== user1?._id  &&<Follow user={user1} />}
 </div>
               )
             }) : <Warnning  title={'following'} />
@@ -132,8 +134,8 @@ onClick={()=>{
             followersUser.length !==0 ? followersUser?.map((user2,index)=>{
               return(
                 <div className='d-flex justify-content-between align-items-center'>
-<Avatar xxx widthAndHeight={{width:"60px",height:'60px'}}  styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user2} styled={{fontSize:'20px'}} />
-             <Follow user={user2} />
+<Avatar showname={true} xxx widthAndHeight={{width:"60px",height:'60px'}}  styledavatar={{ borderRadius: '50%', width: '40px', height: '40px', background: 'rgb(244 67 54)', color: 'white' }}  com={user2} styled={{fontSize:'20px'}} />
+           {userstate?._id !== user2?._id  && <Follow user={user2} /> }
              </div>
              )
             

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { deleteImg, resetState, upload } from '../../features/upload/upload.slice'
 import { createposts, getAllPosts } from '../../features/post/postSlice'
 import Spinner from '../Spinner'
-import { upload_vd } from '../../features/uploadVideo/uploadSlice'
+import { upload_vd ,resetStateVd} from '../../features/uploadVideo/uploadSlice'
 const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
     const myElementRef = useRef(null)
 
@@ -18,7 +18,7 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
     const dispatch = useDispatch()
     const loadingUploadImgPost = useSelector(state => state?.upload?.isLoading)
 
-
+    const loadingUploadVdoPost = useSelector(state => state?.upload_vd?.isLoading)
     const handleClick = (event) => {
         const myElement = myElementRef.current
         if (event.target.classList.contains(`${myElement.className}`)) {
@@ -29,7 +29,9 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
         description: Yup.string().required('description de post required').max(100).min(6),
 
     })
-
+    const uploadState = useSelector(state => state?.upload?.images)
+    const uploadVDState = useSelector(state => state?.upload_vd?.videos)
+    const postCreatedState = useSelector(state=>state?.post?.postcreated)
     const formik = useFormik({
 
 
@@ -44,7 +46,9 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
         onSubmit: (values) => {
             alert(JSON.stringify(values, null, 2))
             dispatch(createposts(values))
-
+            if(Object.keys(postCreatedState).length > 0){
+                dispatch(resetStateVd())
+              }
             setTimeout(() => {
                 dispatch(getAllPosts())
                 closeModal()
@@ -53,10 +57,13 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
             formik.resetForm()
             formik.values.images = ""
             formik.values.description = ""
+            console.log(Object.keys(postCreatedState).length)
+            if(Object.keys(postCreatedState).length > 0){
+              dispatch(resetStateVd())
+            }
         }
     })
-    const uploadState = useSelector(state => state?.upload?.images)
-    const uploadVDState = useSelector(state => state?.upload_vd?.videos)
+
     let img = []
     uploadState?.forEach((elem) => {
         img.push({
@@ -141,7 +148,7 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
 
                     </div>
                     <div className='d-flex align-items-center '>
-                        <button type='submit' className='text-start btn btn-outline-primary  mx-3 mb-4 ' disabled={loadingUploadImgPost ? true : false} >SHARE{loadingUploadImgPost && <Spinner className={'dot-container'} />}</button>
+                        <button type='submit' className='text-start btn btn-outline-primary  mx-3 mb-4 ' disabled={loadingUploadImgPost ? true : false} >SHARE{(loadingUploadImgPost || loadingUploadVdoPost) && <Spinner className={'dot-container'} />}</button>
                         <span className="material-symbols-outlined fs-1 position-relative mb-4">
                             attach_file
                             <Dropzone onDrop={acceptedFiles => {

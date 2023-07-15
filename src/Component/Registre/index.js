@@ -4,10 +4,14 @@ import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import CustomerInput from '../CustomerInput'
 import './style.css'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { createUser } from '../../features/auth/authSlice'
+import {toast} from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 const Register = () => {
     const dispatch=useDispatch()
+    const navigate = useNavigate()
+    const createUserState = useSelector(state=>state?.auth?.createUser)
     let schema = Yup.object().shape({
         lastname: Yup.string().required('required').max(20).min(4),
         firstname:Yup.string().required('required').min(4).max(20),
@@ -27,8 +31,11 @@ const Register = () => {
         validationSchema: schema,
         onSubmit: (values) => {
                 dispatch(createUser(values))
+               if(Object.keys(createUserState).length !== 0){
+                navigate('/login')
+                toast.success("User Created !!!")
+               }
                
-                
           
           
         }

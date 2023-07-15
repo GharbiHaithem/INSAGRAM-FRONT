@@ -7,7 +7,7 @@ import InputEmoji from 'react-input-emoji'
 import moment from 'moment'
 import { useRef } from "react";
 import './style.css'
-const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage}) => {
+const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage,socket}) => {
     console.log(userDataId)
    
     const dispatch = useDispatch()
@@ -92,15 +92,23 @@ console.log(chatId)
         dispatch(getmessage(chatId))
       },300)
     }
-    useEffect(()=>{
-        console.log(receiveMessage && receiveMessage.chatId)
-        console.log(chatId)
-        console.log(receiveMessage && receiveMessage.chatId === chatId)
-        if(receiveMessage !== null){
-            console.log(receiveMessage)
-            dispatch(getmessage(chatId))
+    useEffect(() => {
+      if (socket !== null) {
+        socket.on("receive-message", (data) => {
+          console.log("Message reçu :", data);
+          // Effectuez les actions souhaitées en fonction des données reçues
+          dispatch(getmessage(chatId));
+        });
+      }
+    
+      // Nettoyage de l'écoute de l'événement lorsque le composant est démonté ou lorsque socket change
+      return () => {
+        if (socket !== null) {
+          socket.off("receive-message");
         }
-    },[chatId,dispatch,receiveMessage])
+      };
+    }, [socket, chatId, dispatch]);
+    
       const scroll = useRef();
       const imageRef = useRef();
     return (

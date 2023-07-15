@@ -45,12 +45,15 @@ const Chat = ({ socket }) => {
   const userstate = useSelector(state => state?.auth?.user)
   const [userDataId, setUserDataId] = useState(null)
   const handleAddConv=()=>{
-    console.log()
+    console.log(recupereIdReceiption)
     if(isReady){
-    
+    console.log("ready")
+    if(chatstate.length === 0)   dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
+     else { 
+
       chatstate && 
       chatstate.forEach((element) => {
-      
+    
         if(!element?.members?.includes(recupereIdReceiption)) {
         console.log(element)
          dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
@@ -59,6 +62,8 @@ const Chat = ({ socket }) => {
           return
         }
     })
+     }
+     
   
   }
 }
@@ -80,8 +85,8 @@ const Chat = ({ socket }) => {
       socket.emit("send-message", sendMessage)
   }, [socket, sendMessage])
   useEffect(() => {
+  console.log({"socket":socket})
     if (socket !== null) {
-
       socket.on("receive-message", (data) => {
         console.log(data)
        
@@ -89,7 +94,7 @@ const Chat = ({ socket }) => {
       })
     }
 
-  }, [socket,dispatch])
+  }, [socket])
   useEffect(() => {
     if (search) {
       dispatch(getAuserBySearch(search))
@@ -134,7 +139,7 @@ const Chat = ({ socket }) => {
 
           <div className='body-conversation'>
             <div>
-              <ChatBox chat={currentChat} setSendMessage={setSendMessage} receiveMessage={receiveMessage} userDataId={userDataId} currentUser={userstate?._id} />
+              <ChatBox  socket={socket} chat={currentChat} setSendMessage={setSendMessage} receiveMessage={receiveMessage} userDataId={userDataId} currentUser={userstate?._id} />
             </div>
           </div>
      

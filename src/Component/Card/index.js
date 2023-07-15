@@ -159,8 +159,8 @@ if(res[0]=== true){
         {
           item && item?.images?.map((_img, index) => {
             return (
-              <SwiperSlide key={index} style={{ width: '100%', height: '600px' }}>
-                <img src={_img?.url} alt={_img?.public_id} style={{ objectFit: 'cover', width: '100%' }} />
+              <SwiperSlide key={index} style={{ width: '100%', height: '800px' }}>
+                <img src={_img?.url} alt={_img?.public_id} style={{ objectFit:isScreenSmall ? 'contain' : 'cover', width: '100%' }} />
               </SwiperSlide>
             )
           })

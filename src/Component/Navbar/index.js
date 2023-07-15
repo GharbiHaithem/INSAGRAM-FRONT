@@ -112,7 +112,7 @@ const dispatch = useDispatch()
                         <div className={`d-flex align-items-center ${isScreenSmall && search ? "d-none" : "d-block"} ${isScreenSmall ? 'gap-20' : 'gap-30'} `}>
                             <span className={` position-relative material-symbols-outlined pointer ${isScreenSmall ? 'fs-5' : 'fs-1'}`} onClick={()=>setOpenN(!openN)} >
                                 favorite
-                                {openN && <DisplayNotification  />}
+                             
                             </span>
                             <span className={`material-symbols-outlined pointer ${isScreenSmall ? 'fs-5' : 'fs-1'}`} onClick={()=>setShowModal(true)}>
                                 data_saver_on
