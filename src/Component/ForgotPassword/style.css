@@ -84,10 +84,7 @@ margin:10px;
     font-size: 40px;
     font-weight: 900;
  
-    background-clip: text;
-  -webkit-text-fill-color: transparent; /* Pour les navigateurs basés sur WebKit */
-  color: transparent; /* Pour les navigateurs basés sur Blink */
-  background-image: linear-gradient(to right,var(--bs-red),var( --bs-warning));
+   
    }
    body{
     font-family: 'Poppins', sans-serif;
@@ -130,3 +127,4 @@ margin:10px;
   
    
   }
+

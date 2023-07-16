@@ -90,13 +90,14 @@ if(socket !== null) socket.on("verif-user", (user)=>{
         <div className="App">
         <Navbar socket={socket} />
         <Routes>
-          <Route path='/' element={<Home socket={socket} />} />
+          <Route exact path='/' element={<Home socket={socket} />} />
+          <Route  path='/chat'  element={<Chat  socket={socket} online={online} />} />
           <Route path='/login' element={<OpenRoute><Login /></OpenRoute>} />
           <Route path='/register' element={<OpenRoute><Register /></OpenRoute>} />
           <Route path='/forgotpassword' element={<OpenRoute><ForgotPassword/></OpenRoute>} />
           <Route path='/resetPassword/:token' element={<OpenRoute><ResetPassword/></OpenRoute>} />
           <Route  path='/profile/:id' element={<Profil/>} />
-          <Route  path='/chat'  element={<Chat  socket={socket} online={online} />} />
+        
           
         </Routes>
         </div>

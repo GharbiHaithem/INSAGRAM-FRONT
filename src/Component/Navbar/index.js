@@ -102,10 +102,12 @@ const dispatch = useDispatch()
                        {!isScreenSmall && <div className='search-box'>
                             <span onClick={() => setSearch(true)} className={`material-symbols-outlined pointer ${search && "d-none"} ${isScreenSmall ? 'fs-5' : 'fs-1'}`} style={{ transform: `translateY(${isScreenSmall ? "3px" : "0"})` }} >
                                 search
+                            
                             </span>
                             {search && <CustomerInput className={'search'} style={{ transform: 'translateY(-10px)', position: "relative" }} placeholder={'Search ...'} type={'text'} />}
                             {search &&<span onClick={()=>setSearch(false)} className="material-symbols-outlined position-absolute" style={{top:23,right:`${isScreenSmall ? '10px' : '345px'}`}}>
                                 cancel
+                                
                             </span> }
                         </div>
 }
@@ -122,8 +124,9 @@ const dispatch = useDispatch()
                             </span>
                         </div>
                         <Dropdown className={`drop-down ${isScreenSmall && search ? "d-none" : "d-block"}`}>
-                            {userState && userState?.pic[0]?.length === 0 ?
+                            {userState && userState?.pic?.length === 0 ?
                         <Dropdown.Toggle variant='light' id="dropdown-basic" style={{ width: '50px',color:'white', height: '50px', borderRadius: '50%', background:"rgb(244 67 54)" }}>
+                     
                         <span style={{ fontWeight: "700" }}>{userState?.lastname[0]}</span>
                     </Dropdown.Toggle> : 
                      <Dropdown.Toggle  id="dropdown-basic" style={{background:'transparent',outline:'none',border:'none'}}>

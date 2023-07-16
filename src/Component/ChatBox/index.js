@@ -20,51 +20,49 @@ const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage,sock
     const {dataUserId} = useSelector(state=>state?.auth)
     const userId = useSelector(state=>state?.auth?.user)
     const[filterData,setFilterData] = useState([])
-   
+    console.log(userDataId)
     useEffect(()=>{
 // alert(JSON.stringify({aaaaaaaaaaaa:chat?._id}))
-console.log(userDataId)
+
 if(userDataId){
     let filteredArray= [];
     // dispatch(getAuser(userDataId))
-     filteredArray = dataUserId.filter(item => item._id === userDataId);
-    setFilterData(filteredArray)
-    dispatch(getchatUser(filteredArray[0]?._id))
+    //  filteredArray = dataUserId.filter(item => item._id === userDataId);
+    // setFilterData(filteredArray)
+    console.log(userDataId)
+    dispatch(getchatUser(userDataId))
 }
 
-    },[userDataId,dispatch,dataUserId])
+    },[userDataId,dispatch])
 const chatConv = useSelector(state=>state?.chat?.conversation)
 const[chatId,setChatId] = useState(null)
 useEffect(() => {
-    if (chat && userDataId) {
-      const filteredData = chat.members
-        .filter(member => member === userDataId)
-        .map(() => ({ _id: chat._id }));
-      console.log(filteredData);
-      if(chatConv.length === 1){
-        setChatId(chatConv[0]?._id)
-      }else{
-        setChatId(filteredData[0]?._id);
-      }
-     
-    }
-  }, [chat, userDataId,chatConv]);
-  
-  useEffect(() => {
-    if (chatId !== null && userDataId) {
+   console.log("receipt" + userDataId)
+   console.log("chat by user" + JSON.stringify(chatConv))
+  }, [userDataId,chatConv]);
+useEffect(()=>{
+ const filter =  chatConv?.filter((x)=>(x?.members?.includes(userId?._id))) 
+ setChatId(filter[0]?._id)
+ console.log(chatId)
+},[chatConv,userId])
+console.log(chatId)  
+  // useEffect(() => {
+  //   if (chatId !== null && userDataId) {
+  //     console.log(chatId);
+  //     dispatch(getmessage(chatId));
+  //   }else if(chatId === undefined){
+  //      dispatch(getmessage(chatConv?._id))
+  //   }
+  // }, [chatId, dispatch,chatConv?._id,userDataId]);
+
+useEffect(() => {
+    if (chatId !== undefined) {
       console.log(chatId);
       dispatch(getmessage(chatId));
-    }else if(chatId === undefined){
-       dispatch(getmessage(chatConv?._id))
+    }else if(chatId === undefined ){
+      console.log("pas de chat")
     }
-  }, [chatId, dispatch,chatConv?._id,userDataId]);
-console.log(chatId)
-// useEffect(() => {
-//     if (chatId !== undefined) {
-//       console.log(chatId);
-//       dispatch(getmessage(chatId));
-//     }
-//   }, [chatId, dispatch]);
+  }, [chatId, dispatch]);
      const messages = useSelector(state=>state?.chat?.getedmessage)
        useEffect(()=> {
     scroll.current?.scrollIntoView({ behavior: "smooth" });

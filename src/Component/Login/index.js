@@ -83,7 +83,7 @@ useEffect(()=>{
 
        
             <div className='form-login d-flex flex-column ' >
-                <h5 className='text-center '>Login</h5>
+                <h5 className='text-center ' style={{color:'pink'}}>Login</h5>
                 <hr />
                 <p className='text-center'></p>
                 <form className='d-flex flex-column gap-10 ' onSubmit={formik.handleSubmit} >
@@ -100,8 +100,8 @@ useEffect(()=>{
 
 
                     <div className='d-flex justify-content-between fs-6'>
-                        <Link style={{ textDecoration: 'none' ,color:"var(--bs-pink)"}} to='/register'>Register</Link>
-                        <Link to={'/forgotpassword'} style={{ textDecoration: 'none', textAlign: 'end', marginBottom: '20px',color:"var(--bs-pink)" }}>Forgot Password ?</Link>
+                        <Link style={{ textDecoration: 'none' ,color:"var(--bs-pink)",fontWeight:'600'}} to='/register'>Register</Link>
+                        <Link to={'/forgotpassword'} style={{ textDecoration: 'none', textAlign: 'end', marginBottom: '20px',color:"var(--bs-pink)",fontWeight:'600' }}>Forgot Password ?</Link>
                     </div>
                     <div className='bloc-btn gap-10 flex-column d-flex'>
 {isMessage && <span className='fs-7 p-4 text-uppercase text-light text-center'>{isMessage}</span>}

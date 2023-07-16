@@ -14,9 +14,9 @@ const Chat = ({ socket }) => {
   const [search, setSearch] = useState(null)
   const [isReady, setIsReady] = useState(false);
   const [recupereIdReceiption, setTRecupereIdReceiption] = useState(null)
- const chatstate = useSelector(state=>state?.chat?.conversation)
+  const chatstate = useSelector(state => state?.chat?.conversation)
   useEffect(() => {
- 
+
     console.log(recupereIdReceiption)
     if (recupereIdReceiption) {
       setIsReady(true);
@@ -44,29 +44,49 @@ const Chat = ({ socket }) => {
   const dispatch = useDispatch()
   const userstate = useSelector(state => state?.auth?.user)
   const [userDataId, setUserDataId] = useState(null)
-  const handleAddConv=()=>{
-    console.log(recupereIdReceiption)
-    if(isReady){
-    console.log("ready")
-    if(chatstate.length === 0)   dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
-     else { 
-
-      chatstate && 
-      chatstate.forEach((element) => {
+  const handleAddConv = () => {
+    if (isReady) {
+      console.log(recupereIdReceiption);
+      let chatExists = false;
     
-        if(!element?.members?.includes(recupereIdReceiption)) {
-        console.log(element)
-         dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
-        }else {
-          setSearch("")
-          return
+      if (chatstate?.length === 0) {
+        dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
+      } else {
+        chatstate?.forEach((chat) => {
+          if (chat.members.includes(recupereIdReceiption) && chat.members.includes(userstate?._id)) {
+            console.log('Le chat existe');
+            chatExists = true;
+          }
+        });
+    
+        if (!chatExists) {
+          dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
         }
-    })
-     }
-     
-  
+      }
+    }
+    //   if(isReady){
+    //   console.log("ready")
+    //   if(chatstate.length === 0)   dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
+    //    else { 
+
+    //     chatstate && 
+    //     chatstate.forEach((element) => {
+
+    //       if(!element?.members?.includes(recupereIdReceiption)) {
+    //       console.log(element)
+    //        dispatch(createconv({ senderId: userstate?._id, receiptId: recupereIdReceiption }));
+    //       }else {
+    //         setSearch("")
+    //         alert('exist')
+    //         return
+    //       }
+    //   })
+    //    }
+
+
+    // }
+
   }
-}
   useEffect(() => {
     console.log(userDataId)
   }, [userDataId])
@@ -85,11 +105,11 @@ const Chat = ({ socket }) => {
       socket.emit("send-message", sendMessage)
   }, [socket, sendMessage])
   useEffect(() => {
-  console.log({"socket":socket})
+    console.log({ "socket": socket })
     if (socket !== null) {
       socket.on("receive-message", (data) => {
         console.log(data)
-       
+
         setReceiveMessage(data)
       })
     }
@@ -101,51 +121,61 @@ const Chat = ({ socket }) => {
     }
   }, [search, dispatch])
   const userSearchState = useSelector(state => state?.auth?.search)
-  const[cliked,setCliked] = useState(false)
+  const [cliked, setCliked] = useState(false)
 
   return (
     <div className='container my-5 py-5'>
       <div className='chat-box'>
-     
-          <div className='left-bar'>
-            <div className='search-conversation'>
-              <div className='position-relative'>
-                <CustomerInput placeholder={"search your conversation"} type='text' name={'search'} value={search} onChange={(e) => setSearch(e.target.value)} />
-                <div className='position-absolute bg-warning' style={{ width: '100%' }}
-                  onClick={handleAddConv}
-                >
-                  {
-                    search && search.length !== 0 && userSearchState && userSearchState?.map((user, index) => {
-                      return <Avatar widthAndHeight={{width:'45px',height:'45px'}} showname={true} onClick={()=>setTRecupereIdReceiption(user?._id)}  styledavatar={{ borderRadius: '50%', width: '30px', height: '30px', background: 'rgb(244 67 54)', color: 'white' }} com={user ? user : ''} styled={{ fontSize: '10px', marginRight: '10px' }} key={index} />
-                    })
-                  }
 
-                </div>
+        <div className='left-bar'>
+          <div className='search-conversation'>
+            <div className='position-relative'>
+              <CustomerInput placeholder={"search your conversation"} type='text' name={'search'} value={search} onChange={(e) => setSearch(e.target.value)} />
+              <div className='position-absolute bg-warning' style={{ width: '100%' }}
+                onClick={handleAddConv}
+              >
+                {
+                  search && search.length !== 0 && userSearchState && userSearchState?.map((user, index) => {
+                    return <Avatar widthAndHeight={{ width: '45px', height: '45px' }} showname={true} onClick={() => setTRecupereIdReceiption(user?._id)} styledavatar={{ borderRadius: '50%', width: '30px', height: '30px', background: 'rgb(244 67 54)', color: 'white' }} com={user ? user : ''} styled={{ fontSize: '10px', marginRight: '10px' }} key={index} />
+                  })
+                }
+
               </div>
-              {
-                chat && chat?.map((data, index) => {
-                  let isFirstChat = index === 0;
-                  return (
-                    <div key={index} onClick={() => handleConversationClick(data)} >
-                      <Conversation   cliked={cliked} setCliked={setCliked} isFirstChat={isFirstChat} chatConversation={data} setUserDataId={setUserDataId} userDataId={userDataId} userId={userstate?._id} />
-                    </div>
-                  )
-                })
-              }
             </div>
+            {
+              chat && chat?.map((data, index) => {
+                let isFirstChat = index === 0;
+                return (
+                  <div key={index} onClick={() => handleConversationClick(data)} >
+                    <Conversation cliked={cliked} setCliked={setCliked} isFirstChat={isFirstChat} chatConversation={data} setUserDataId={setUserDataId} userDataId={userDataId} userId={userstate?._id} />
+                  </div>
+                )
+              })
+            }
           </div>
-       
+        </div>
 
 
-          <div className='body-conversation'>
-            <div>
-              <ChatBox  socket={socket} chat={currentChat} setSendMessage={setSendMessage} receiveMessage={receiveMessage} userDataId={userDataId} currentUser={userstate?._id} />
-            </div>
+
+        <div className='body-conversation'>
+          <div>
+            <ChatBox socket={socket} chat={currentChat} setSendMessage={setSendMessage} receiveMessage={receiveMessage} userDataId={userDataId} currentUser={userstate?._id} />
           </div>
-     
+        </div>
+
       </div>
     </div>
   )
 }
 
 export default Chat
+
+
+const AlreadyExist = ({ isReady, chatState }) => {
+  if (isReady) {
+    chatState && chatState?.map((chat) => {
+      return console.log(chat)
+    })
+  }
+
+}

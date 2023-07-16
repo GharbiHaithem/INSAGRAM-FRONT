@@ -10,9 +10,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import{RiCloseCircleLine} from 'react-icons/ri'
 import { getAuser, refreshdata, updateProfileUser } from '../../features/auth/authSlice'
 import { getAllPosts } from '../../features/post/postSlice'
+import Spinner from '../Spinner'
 const Avatar2 = ({ className, style, user, styled, styledavatar, font_size, hover, noname,showForm,configState,closeModal }) => {
   const { id } = useParams()
   const imagestate = useSelector(state=>state?.upload?.images)
+  const isLoadImg = useSelector(state=>state?.upload?.isLoading)
   const userUpdate = useSelector(state=>state?.auth?.userUpdated)
   const [isHovered, setIsHovered] = useState(false);
   const [onUpload,setOnUpload] = useState(false)
@@ -86,7 +88,7 @@ console.log(userUpdate)
     <div className={'avatarhover'} style={style} onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave} >
       <div className={'d-flex gap-10 align-items-center flex-column '} >
-        {user && user?.pic[0]?.length === 0 && selectedImage === null ? <div className=' d-flex  justify-content-center align-items-center aaaa' style={styledavatar}><span style={font_size} className={'fs-7'}>{user && user?.lastname[0]}</span></div> :  
+        {user && user?.pic?.length === 0 && selectedImage === null ? <div className=' d-flex  justify-content-center align-items-center aaaa' style={styledavatar}><span style={font_size} className={'fs-7'}>{user && user?.lastname[0]}</span></div> :  
        
         <>
           {
@@ -123,11 +125,11 @@ console.log(userUpdate)
 </Dropzone>
             </div>
           </div>}
-          <button className='btn btn-outline-success btn-sm' style={{
+          {isLoadImg === true ? <button className='btn btn-sm btn-primary'>LOADING &nbsp;<Spinner/></button> : <button className='btn btn-outline-success btn-sm' style={{
             margin: 'auto'
             , display: 'block',
             marginTop: '-5px'
-          }} type='button'> Save Photo</button>
+          }} type='button'> Save Photo  </button> }
           <BiMessageSquareEdit className='d-block mx-auto fs-4' onClick={() => setUpdateProfile(!updateProfile)} />
           {updateProfile && <CustomerInput type={'text'} name={'firsttname'} placeholder={'fistname...'} />}
         </form> }

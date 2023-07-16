@@ -168,7 +168,7 @@ if(res[0]=== true){
         {
           (item?.videos?.map((_video, index) => {
             return (
-              <SwiperSlide key={index} style={{ width: '100%', height: '300px' }}>
+              <SwiperSlide key={index} style={{ width: '100%', height: '800px' }}>
 
                 <video className='video_player' controls width={'100%'} height="100%">
                   <source src={_video?.url} type="video/mp4" />
