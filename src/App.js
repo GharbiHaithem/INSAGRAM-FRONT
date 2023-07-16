@@ -15,6 +15,7 @@ import io from 'socket.io-client';
 import { refreshdata, suggestusers, users } from './features/auth/authSlice';
 import Profil from './Component/Profil';
 import Chat from './Component/Chat';
+import { PrivateRoute } from './routers/privateroutes';
 
 
  // Remplacez l'URL par l'adresse de votre serveur
@@ -91,7 +92,7 @@ if(socket !== null) socket.on("verif-user", (user)=>{
         <Navbar socket={socket} />
         <Routes>
           <Route exact path='/' element={<Home socket={socket} />} />
-          <Route  path='/chat'  element={<Chat  socket={socket} online={online} />} />
+          <Route  path='/chat'  element={<PrivateRoute > <Chat  socket={socket} online={online} /> </PrivateRoute>} />
           <Route path='/login' element={<OpenRoute><Login /></OpenRoute>} />
           <Route path='/register' element={<OpenRoute><Register /></OpenRoute>} />
           <Route path='/forgotpassword' element={<OpenRoute><ForgotPassword/></OpenRoute>} />
