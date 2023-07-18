@@ -159,7 +159,7 @@ if(res[0]=== true){
         {
           item && item?.images?.map((_img, index) => {
             return (
-              <SwiperSlide key={index} style={{ width: '100%', height: '800px' }}>
+              <SwiperSlide key={index} style={{ width: '100%', height: 'max-content' }}>
                 <img src={_img?.url} alt={_img?.public_id} style={{ objectFit:isScreenSmall ? 'contain' : 'cover', width: '100%' }} />
               </SwiperSlide>
             )
@@ -168,7 +168,7 @@ if(res[0]=== true){
         {
           (item?.videos?.map((_video, index) => {
             return (
-              <SwiperSlide key={index} style={{ width: '100%', height: '800px' }}>
+              <SwiperSlide key={index} style={{ width: '100%', height: 'max-content' }}>
 
                 <video className='video_player' controls width={'100%'} height="100%">
                   <source src={_video?.url} type="video/mp4" />

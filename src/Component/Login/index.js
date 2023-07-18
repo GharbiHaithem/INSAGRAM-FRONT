@@ -8,9 +8,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../../features/auth/authSlice'
 import backgroundImage from '../../assets/wave.svg'
 import oo from '../../assets/wave (1).svg'
-const Login = () => {
+import {toast} from 'react-toastify'
+const Login = ({socket}) => {
     const dispatch = useDispatch()
     const msg = useSelector(state=>state?.auth?.message)
+    const userstate = useSelector(state=>state?.auth?.user)
     const[isMessage,setIsMessage] = useState(msg)
     let schema = Yup.object().shape({
         email: Yup.string().required('required mail').email('doit etre un email valid'),
@@ -27,12 +29,18 @@ const Login = () => {
         validationSchema: schema,
         onSubmit: (values) => {
             dispatch(loginUser(values))
+            socket.emit('adduser', (userId) => {
+                // Gérer l'événement userConnected côté client
+                console.log('Nouvel utilisateur connecté avec l\'ID :', userId);
+              });
             if(msg){
-                setIsMessage(msg)
+               toast.error(msg)
             }
             setTimeout(() => {
            
                 if (isLogin) {
+                    socket.emit('adduser',userstate?._id)
+                   
                     navigate('/')
                     setIsMessage('')
                 }
@@ -43,11 +51,18 @@ const Login = () => {
 
         }
     })
-  
+  useEffect(()=>{
+    socket.on('userListUpdated', (updatedUserList) => {
+        // Mettez à jour votre interface utilisateur avec la liste des utilisateurs en ligne (updatedUserList)
+        console.log('Liste des utilisateurs mise à jour :', updatedUserList);
+      
+        // Par exemple, vous pouvez mettre à jour votre interface en utilisant React ou d'autres frameworks selon votre configuration.
+      });
+  },[])
 
 useEffect(() => {
-    console.log(isMessage.length);
-    if (isMessage.length !== '') {
+    console.log(isMessage?.length);
+    if (isMessage?.length !== '') {
       const timer = setTimeout(() => {
         setIsMessage('');
       }, 3000);
@@ -58,20 +73,14 @@ useEffect(() => {
 useEffect(()=>{
    if(isLogin){
     dispatch(loginUser(formik.values))
+    socket.emit('adduser',userstate?._id)
     setIsMessage('')
     navigate('/')
    }
-},[isLogin,navigate])
+},[isLogin,navigate,socket,formik,userstate,dispatch])
     return (
 
-    <div className='container'  style={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
-      
-      }}>
+    <div className='container'>
             <div className='login-wrapper '
           
             >
@@ -92,7 +101,7 @@ useEffect(()=>{
                     {formik.touched.email && formik.errors.email ? <span className='p-1 badge bg-danger rounded-2'>
                         {formik.errors.email}
                     </span> : null}
-                    <CustomerInput type={'password'} title={'Password'} name='password' className={'form-control'} value={formik.values.password} onChange={formik.handleChange('password')} placeholder={'Password'} />
+                    <CustomerInput colorText={{color:"#c33083"}} type={'password'} title={'Password'} name='password' className={'form-control'} value={formik.values.password} onChange={formik.handleChange('password')} placeholder={'Password'} />
                     {formik.touched.password && formik.errors.password ? <span className='p-1 badge bg-danger rounded-2'>
                         {formik.errors.password}
                     </span> : null}

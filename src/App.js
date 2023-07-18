@@ -16,22 +16,27 @@ import { refreshdata, suggestusers, users } from './features/auth/authSlice';
 import Profil from './Component/Profil';
 import Chat from './Component/Chat';
 import { PrivateRoute } from './routers/privateroutes';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
  // Remplacez l'URL par l'adresse de votre serveur
 
 function App() {
+  const[showConv,setShowConv] = useState(false)
   const user = useSelector(state=>state?.auth?.user)
   const[online,setOnline] = useState([])
-  const [_user,setUser] = useState(user ? user?._id : null )
+
   const [socket,setSocket] = useState(null)
+  const[onlineUsers,setOnlineUsers] = useState([])
  useEffect(()=>{
-  setSocket(io('http://localhost:5000'));
+  setSocket(io('https://instagram-backend-e07m.onrender.com'));
  },[])
  useEffect(()=>{
   console.log(socket)
-socket?.emit("adduser",(_user))
- },[socket,_user])
+
+ if(user) socket?.emit("adduser",(user?._id))
+ },[socket,user])
   const dispatch = useDispatch()
 // Écoutez l'événement 'message' du serveur
 
@@ -65,7 +70,17 @@ dispatch(users())
     socket.on('connect', () => {
       console.log('Connected to server');
     });
-  
+ 
+  const handleBeforeUnload = () => {
+    socket.disconnect();
+  };
+  socket.on('userListUpdated', (updatedUserList) => {
+    // Mettez à jour votre interface utilisateur avec la liste des utilisateurs en ligne (updatedUserList)
+    console.log('Liste des utilisateurs mise à jour :', updatedUserList);
+    setOnlineUsers(updatedUserList)
+    // Par exemple, vous pouvez mettre à jour votre interface en utilisant React ou d'autres frameworks selon votre configuration.
+  });
+  window.addEventListener("beforeunload", handleBeforeUnload);
     socket.on('receive-comment', (data) => {
       console.log('Received comment:', data);
       dispatch(getAllPosts())
@@ -76,14 +91,19 @@ dispatch(users())
     return () => {
       socket.off('connect');
       socket.off('receive-comment');
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      socket.disconnect();
     };
+    
   }
-  }, [socket]);
+
+  }, [socket,dispatch]);
   useEffect(()=>{
 if(socket !== null) socket.on("verif-user", (user)=>{
   console.log(user)
 })
   },[socket])
+
   return (
   
 
@@ -92,8 +112,8 @@ if(socket !== null) socket.on("verif-user", (user)=>{
         <Navbar socket={socket} />
         <Routes>
           <Route exact path='/' element={<Home socket={socket} />} />
-          <Route  path='/chat'  element={<PrivateRoute > <Chat  socket={socket} online={online} /> </PrivateRoute>} />
-          <Route path='/login' element={<OpenRoute><Login /></OpenRoute>} />
+          <Route  path='/chat'  element={<PrivateRoute > <Chat showConv={showConv} setShowConv={setShowConv} onlineUsers={onlineUsers} socket={socket} online={online} /> </PrivateRoute>} />
+          <Route path='/login' element={<OpenRoute><Login socket={socket} /></OpenRoute>} />
           <Route path='/register' element={<OpenRoute><Register /></OpenRoute>} />
           <Route path='/forgotpassword' element={<OpenRoute><ForgotPassword/></OpenRoute>} />
           <Route path='/resetPassword/:token' element={<OpenRoute><ResetPassword/></OpenRoute>} />
@@ -101,6 +121,18 @@ if(socket !== null) socket.on("verif-user", (user)=>{
         
           
         </Routes>
+        <ToastContainer
+position="top-center"
+autoClose={5000}
+hideProgressBar={false}
+newestOnTop={false}
+closeOnClick
+rtl={false}
+pauseOnFocusLoss
+draggable
+pauseOnHover
+theme="dark"
+/>
         </div>
       </BrowserRouter>
   

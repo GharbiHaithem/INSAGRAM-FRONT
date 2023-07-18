@@ -19,7 +19,9 @@
     gap:10px
 }
 .x{
-    background-color: rgb(238, 236, 236);
+    background-color: rgb(250, 250, 250);
+    opacity: 0.8;
+    backdrop-filter: blur(10px);
     height: max-content;
 }
 @media screen and (max-width: 400px){

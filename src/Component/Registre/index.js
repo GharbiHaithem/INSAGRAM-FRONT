@@ -12,6 +12,7 @@ const Register = () => {
     const dispatch=useDispatch()
     const navigate = useNavigate()
     const createUserState = useSelector(state=>state?.auth?.createUser)
+    const msg = useSelector(state=>state?.auth?.message)
     let schema = Yup.object().shape({
         lastname: Yup.string().required('required').max(20).min(4),
         firstname:Yup.string().required('required').min(4).max(20),
@@ -31,9 +32,11 @@ const Register = () => {
         validationSchema: schema,
         onSubmit: (values) => {
                 dispatch(createUser(values))
+                if(msg)   toast.error(msg)
                if(Object.keys(createUserState).length !== 0){
+              
                 navigate('/login')
-                toast.success("User Created !!!")
+               
                }
                
           
@@ -71,6 +74,7 @@ const Register = () => {
 
 
                             {/* {msgState && <span className='badge bg-secondary p-3 text-xl-start fw-bold text-uppercase'>{msgState}</span>} */}
+                           {/* {msg &&  <span className='mb-4 mt-2 badge bg-secondary p-3 text-xl-start fw-bold text-uppercase'>{msg}</span> } */}
                             <div className='bloc-btn gap-10 flex-column d-flex'>
 
                                 <button className='w-100 text-center  button  p-2' type='submit'><span className='text-light' >Registre</span></button>
@@ -84,20 +88,7 @@ const Register = () => {
 
             </div>
         
-        <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-        />
-        {/* Same as */}
-        <ToastContainer />
+       
     </div>
     )
 }

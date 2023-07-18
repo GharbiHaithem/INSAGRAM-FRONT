@@ -3,11 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAuser } from '../../features/auth/authSlice'
 import Avatar from '../Avatar'
 
-const Conversation = ({chatConversation,userId,isFirstChat,setUserDataId,userDataId,setCliked,cliked,setAddClass,onClick}) => {
+const Conversation = ({children,online,chatConversation,userId,isFirstChat,setUserDataId,userDataId,setCliked,cliked,setAddClass,onClick,isScreenSmall}) => {
     const dispatch = useDispatch()
     const[profileUser,setProfileUser] = useState(null)
   
     useEffect(()=>{
+      console.log(online)
     const  user = chatConversation?.members?.find((id)=>id !== userId)
     console.log(user);
     setProfileUser(user)
@@ -33,7 +34,7 @@ const Conversation = ({chatConversation,userId,isFirstChat,setUserDataId,userDat
     console.log(userDataId)
     console.log(cliked) 
   },[userDataId])
-   
+   console.log(uniqueData)
      return (
         <div >
     
@@ -41,25 +42,31 @@ const Conversation = ({chatConversation,userId,isFirstChat,setUserDataId,userDat
            uniqueData.map(x => {
             return (
             
+            
                 isFirstChat && <Avatar
+                isScreenSmall={isScreenSmall}
                 key={x.id}
                 showname={true}
                 styledP={{height:"100px"}}
                 cliked={cliked}
                 setCliked ={setCliked}
-                widthAndHeight={{width:'60px',height:'60px'}}
+                textstatus={false}
+                showMsg={true}
+                widthAndHeight={{width:isScreenSmall? '40px' : '60px',height:isScreenSmall? '40px' : '60px'}}
                 onClick={()=>{
-                
+                  
                   setUserDataId(x?._id)
                 }}
+                badge={true}
+                online={online}
                 userDataId={userDataId}
                 styled={{ fontSize: '13px' }}
                 styledavatar={{ borderRadius: '50%', width: '30px', height: '30px', background: 'rgb(244 67 54)', color: 'white' }}
                 com={x}
-                
+                status={'position-relative'}
               />
-        
-              
+       
+                         
             )
           })
        
@@ -70,7 +77,7 @@ const Conversation = ({chatConversation,userId,isFirstChat,setUserDataId,userDat
           
           
             }
-    
+
         </div>
     )
 }

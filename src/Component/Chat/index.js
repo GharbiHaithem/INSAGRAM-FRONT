@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react'
 import CustomerInput from '../CustomerInput'
 import './style.css'
 import { useDispatch, useSelector } from 'react-redux'
-import { createconv, getchatUser, getmessage } from '../../features/chat/chatSlice'
+import { createconv, getchatUser, getmessage, showconversation } from '../../features/chat/chatSlice'
 import Conversation from '../Conversation'
 import ChatBox from '../ChatBox'
-import { getAuserBySearch } from '../../features/auth/authSlice'
+import { getAuser, getAuserBySearch } from '../../features/auth/authSlice'
 import Avatar from '../Avatar'
-const Chat = ({ socket }) => {
+const Chat = ({ socket,onlineUsers }) => {
   const [isScreenSmall, setIsScreenSmall] = useState(false);
   const [sendMessage, setSendMessage] = useState(null)
   const [receiveMessage, setReceiveMessage] = useState(null)
@@ -15,6 +15,16 @@ const Chat = ({ socket }) => {
   const [isReady, setIsReady] = useState(false);
   const [recupereIdReceiption, setTRecupereIdReceiption] = useState(null)
   const chatstate = useSelector(state => state?.chat?.conversation)
+  const allUsers = useSelector(state=>state?.auth?.users)
+  const[online,setOnline] = useState([])
+  useEffect(()=>{
+     let arr=[];
+      onlineUsers?.map((user)=>arr.push(user.userId))
+   const filterData =  allUsers?.filter(user=>arr?.includes(user?._id))
+       console.log(filterData)
+       setOnline(filterData)
+  },[onlineUsers,allUsers])
+ 
   useEffect(() => {
 
     console.log(recupereIdReceiption)
@@ -34,7 +44,7 @@ const Chat = ({ socket }) => {
 
     // Vérifie la taille de l'écran au chargement initial de la page
     handleResize();
-    console.log(isScreenSmall)
+ 
     // Nettoie l'écouteur d'événement lorsque le composant est démonté
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -54,7 +64,7 @@ const Chat = ({ socket }) => {
       } else {
         chatstate?.forEach((chat) => {
           if (chat.members.includes(recupereIdReceiption) && chat.members.includes(userstate?._id)) {
-            console.log('Le chat existe');
+        
             chatExists = true;
           }
         });
@@ -95,6 +105,7 @@ const Chat = ({ socket }) => {
   }, [dispatch, userstate?._id])
   const chat = useSelector(state => state?.chat?.conversation)
   const [currentChat, setCurrentChat] = useState(null)
+
   const handleConversationClick = (data) => {
     setCurrentChat(data);
     console.log(data)
@@ -121,13 +132,14 @@ const Chat = ({ socket }) => {
     }
   }, [search, dispatch])
   const userSearchState = useSelector(state => state?.auth?.search)
+  const showhideconversation = useSelector(state=>state?.chat)
   const [cliked, setCliked] = useState(false)
 
   return (
     <div className='container my-5 py-5'>
-      <div className='chat-box'>
+      <div className={isScreenSmall ? 'col-sm-12' : 'chat-box'}>
 
-        <div className='left-bar'>
+        <div className={`${showhideconversation?.showconversation && isScreenSmall ? 'd-none' : 'left-bar'}`}>
           <div className='search-conversation'>
             <div className='position-relative'>
               <CustomerInput placeholder={"search your conversation"} type='text' name={'search'} value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -146,8 +158,10 @@ const Chat = ({ socket }) => {
               chat && chat?.map((data, index) => {
                 let isFirstChat = index === 0;
                 return (
-                  <div key={index} onClick={() => handleConversationClick(data)} >
-                    <Conversation cliked={cliked} setCliked={setCliked} isFirstChat={isFirstChat} chatConversation={data} setUserDataId={setUserDataId} userDataId={userDataId} userId={userstate?._id} />
+                  <div key={index} onClick={() =>{ 
+                   dispatch(showconversation())
+                    handleConversationClick(data)}} >
+                    <Conversation isScreenSmall={isScreenSmall} online={online} cliked={cliked} setCliked={setCliked} isFirstChat={isFirstChat} chatConversation={data} setUserDataId={setUserDataId} userDataId={userDataId} userId={userstate?._id} />
                   </div>
                 )
               })
@@ -157,8 +171,9 @@ const Chat = ({ socket }) => {
 
 
 
-        <div className='body-conversation'>
+        <div className={`body-conversation ${ showhideconversation?.showconversation  ? 'd-block' : isScreenSmall && 'd-none'} ` }>
           <div>
+         
             <ChatBox socket={socket} chat={currentChat} setSendMessage={setSendMessage} receiveMessage={receiveMessage} userDataId={userDataId} currentUser={userstate?._id} />
           </div>
         </div>
@@ -171,11 +186,3 @@ const Chat = ({ socket }) => {
 export default Chat
 
 
-const AlreadyExist = ({ isReady, chatState }) => {
-  if (isReady) {
-    chatState && chatState?.map((chat) => {
-      return console.log(chat)
-    })
-  }
-
-}

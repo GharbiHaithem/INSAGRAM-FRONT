@@ -8,7 +8,9 @@ const initState = {
     isSuccess: false,
     message: '',
     isLogin: false,
-    conversationcreated: []
+    conversationcreated: [],
+    showconversation : false,
+    hideconversation : false
 }
 export const  getchatUser = createAsyncThunk('/chat/user',async(id,thunkAPI)=>{
     try {
@@ -38,6 +40,15 @@ export const  getchatUser = createAsyncThunk('/chat/user',async(id,thunkAPI)=>{
       return thunkAPI.rejectWithValue(error)  
     }
   })
+  export const findConversation = createAsyncThunk('/chat/findconversation',async(data,thunkAPI)=>{
+    try {
+        return await chatservice.findConversation(data)
+    } catch (error) {
+        return thunkAPI.rejectWithValue(error)
+    }
+  })
+  export const showconversation = createAction('/chat/showconversation')
+  export const hideconversation = createAction('/chat/hideconversation')
 export const chatSlice = createSlice({
     name: 'chat',
     initialState: initState,
@@ -106,6 +117,28 @@ export const chatSlice = createSlice({
                             state.isSuccess=false
                             state.isError=true
                             state.message =action.payload
+                        })
+                        .addCase(findConversation.pending,(state)=>{
+                            state.pending = true
+                        })
+                        .addCase(findConversation.fulfilled,(state,action)=>{
+                            state.pending = false
+                            state.isSuccess = true
+                            state.findConversation = action.payload
+                        })
+                        .addCase(findConversation.rejected,(state,action)=>{
+                            state.isLoading = false
+                            state.isSuccess = false
+                            state.isError = true
+                            state.message = action.payload
+                        })
+                        .addCase(showconversation,(state)=>{
+                            state.showconversation = true
+                            state.hideconversation = false
+                        })
+                        .addCase(hideconversation,(state)=>{
+                            state.hideconversation = true
+                            state.showconversation = false
                         })
                 
             

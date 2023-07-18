@@ -26,3 +26,6 @@
     z-index: 0;
 
   }
+  .css-bhp9pd-MuiPaper-root-MuiCard-root {
+    background-color: transparent !important;
+  }

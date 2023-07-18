@@ -31,7 +31,14 @@ const createconversation = async(data)=>{
     console.log(response.data)
     return await response.data
 }
+const findConversation = async(data)=>{
+    console.log({CONVERSATIONFINDED: data})
+    const response = await API.get(`${base_url}/findchat/${data.firstId}/${data.secondId}`)
+    console.log(response.data)
+    return await response.data
+}
+
 const servicesChat = {
-userChat,getMessage,createmessage,createconversation
+userChat,getMessage,createmessage,createconversation,findConversation
 }
 export default servicesChat;

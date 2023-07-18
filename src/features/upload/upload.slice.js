@@ -5,7 +5,9 @@ const initialState = {
     isLoading:false,
     isError:false,
     isSuccess:false,
-    message:''
+    message:'',
+    status:'idle',
+    progress:0
 }
 export const upload = createAsyncThunk('/upload', async(data,thunkAPI)=>{
     try{
@@ -26,19 +28,29 @@ export const deleteImg = createAsyncThunk('/delete-img',async(id,thunkAPI)=>{
     }
 })
 export const resetState = createAction('/resetUploadImg')
-
+export const uploadProgress = createAction('/uploadProgress')
 export const uploadSlice = createSlice({
     name:'upload',
     initialState,
-    reducers:{},
+    reducers: {
+        // ...Vos autres reducers...
+    
+        setUploadProgress: (state, action) => {
+          state.progress = action.payload;
+        },
+      },
     extraReducers:(builder)=>{
         builder.addCase(upload.pending,(state)=>{
             state.isLoading = true
+            state.status = 'pending';
+            state.progress = 0;
         })
         .addCase(upload.fulfilled,(state,action)=>{
             state.isLoading = false
             state.isSuccess=true
             state.images=action.payload
+            state.status = 'fulfilled';
+            state.progress = 100;
         })
         .addCase(upload.rejected,(state,action)=>{
             state.isLoading=false
@@ -46,6 +58,8 @@ export const uploadSlice = createSlice({
             state.isError=true
             state.message=action.error
             state.images=[]
+            state.status = 'rejected';
+            state.progress = 0;
         })
         builder.addCase(deleteImg.pending,(state)=>{
             state.isLoading = true
@@ -68,6 +82,10 @@ export const uploadSlice = createSlice({
             state.isError=false
             state.isSuccess=false
         })
+        .addCase(uploadProgress,(state,action)=>{
+            state.progress = action.payload;
+        })
     }
 })
+export const { setUploadProgress } = uploadSlice.actions;
 export default uploadSlice.reducer

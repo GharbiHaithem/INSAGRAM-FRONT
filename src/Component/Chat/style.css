@@ -3,6 +3,7 @@
     padding: 20px;
     height: 100vh;
     border-radius: 10px;
+    overflow-y: scroll;
 }
 .body-conversation{
     box-shadow: 0 0 10px #b8b4b4;

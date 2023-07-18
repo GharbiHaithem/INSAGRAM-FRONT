@@ -7,7 +7,7 @@ import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux'
 import Dropzone, { useDropzone } from 'react-dropzone'
 import { useNavigate } from 'react-router-dom'
-import { deleteImg, resetState, upload } from '../../features/upload/upload.slice'
+import { deleteImg, resetState, setUploadProgress, upload, uploadProgress } from '../../features/upload/upload.slice'
 import { createposts, getAllPosts } from '../../features/post/postSlice'
 import Spinner from '../Spinner'
 import { upload_vd ,resetStateVd} from '../../features/uploadVideo/uploadSlice'
@@ -19,6 +19,9 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
     const loadingUploadImgPost = useSelector(state => state?.upload?.isLoading)
 
     const loadingUploadVdoPost = useSelector(state => state?.upload_vd?.isLoading)
+
+    const uploadProgressValue = useSelector((state) => state?.upload?.progress)
+  
     const handleClick = (event) => {
         const myElement = myElementRef.current
         if (event.target.classList.contains(`${myElement.className}`)) {
@@ -46,12 +49,13 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
         onSubmit: (values) => {
             alert(JSON.stringify(values, null, 2))
             dispatch(createposts(values))
+            closeModal()
             if(Object.keys(postCreatedState).length > 0){
                 dispatch(resetStateVd())
               }
             setTimeout(() => {
                 dispatch(getAllPosts())
-                closeModal()
+              
                 dispatch(resetState())
             }, 1000)
             formik.resetForm()
@@ -99,6 +103,8 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
                 </div>
                 <div className='row'>
                     <div className='bloc-img d-flex align-items-center  col-md-6  gap-10  col-sm-6 col-lg-6'  >
+                    <progress value={uploadProgressValue} max="100" />
+          <span>{uploadProgressValue}%</span>
                         {
                             uploadState && uploadState?.map((item, index) => {
                                 return (

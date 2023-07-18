@@ -16,6 +16,7 @@ import Avatar2 from '../Avatar2'
 import Avatar from '../Avatar'
 import { logout } from '../../features/auth/authSlice'
 import {FiInstagram} from 'react-icons/fi'
+import { hideconversation } from '../../features/chat/chatSlice'
 const Navbar = ({socket}) => {
   
     const location = useLocation()
@@ -85,6 +86,17 @@ const Navbar = ({socket}) => {
 }
 const[isHover,setIsHover] = useState(false)
 const dispatch = useDispatch()
+const showhideconversation = useSelector(state=>state?.chat)
+const handleDisconnecte = ()=>{
+    const disconnectButton = document.getElementById('disconnect-button'); // Remplacez 'disconnect-button' par l'ID de votre bouton de déconnexion
+disconnectButton.addEventListener('click', () => {
+  // Appeler socket.disconnect() pour déconnecter le socket côté client
+  socket.disconnect();
+  console.log('Socket déconnecté !');
+  dispatch(logout())
+  navigate('/login')
+});
+}
     return (
         <div className='container'>
             <div className='navbar-wrapper'>
@@ -119,7 +131,9 @@ const dispatch = useDispatch()
                             <span className={`material-symbols-outlined pointer ${isScreenSmall ? 'fs-5' : 'fs-1'}`} onClick={()=>setShowModal(true)}>
                                 data_saver_on
                             </span>
-                            <span className={`material-symbols-outlined pointer ${isScreenSmall ? 'fs-5' : 'fs-1'}`}   onClick={()=>navigate('/chat')} >
+                            <span className={`material-symbols-outlined pointer ${isScreenSmall ? 'fs-5' : 'fs-1'}`}   onClick={()=>{
+                                dispatch(hideconversation())
+                                navigate('/chat')}} >
                                 sms
                             </span>
                         </div>
@@ -130,16 +144,13 @@ const dispatch = useDispatch()
                         <span style={{ fontWeight: "700" }}>{userState?.lastname[0]}</span>
                     </Dropdown.Toggle> : 
                      <Dropdown.Toggle  id="dropdown-basic" style={{background:'transparent',outline:'none',border:'none'}}>
-                    <Avatar  widthAndHeight={{width:`${isScreenSmall ? "40px" : "80px"}` , height:`${isScreenSmall ? "40px" : "80px"}` }} com={userState} />
+                    <Avatar badge={false}  widthAndHeight={{width:`${isScreenSmall ? "40px" : "80px"}` , height:`${isScreenSmall ? "40px" : "80px"}` }} com={userState} />
                  </Dropdown.Toggle>  
                         } 
 
                             <Dropdown.Menu>
                                 <Dropdown.Item   className='p-3'onClick={()=>setConfigState(true)} ><LuSettings2 className='fs-4' />&nbsp;&nbsp; Settings</Dropdown.Item>
-                                <Dropdown.Item  onClick={()=>{
-                                       dispatch(logout())
-                                       navigate('/login')
-                                }} className='p-3'><AiOutlineLogout className='fs-4'  />&nbsp;&nbsp;Logout</Dropdown.Item>
+                                <Dropdown.Item  onClick={handleDisconnecte} className='p-3' id='disconnect-button'><AiOutlineLogout className='fs-4'  />&nbsp;&nbsp;Logout</Dropdown.Item>
                           
                             </Dropdown.Menu>
                         </Dropdown>

@@ -1,5 +1,6 @@
 import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import authServices from './authService'
+import {toast} from 'react-toastify'
 const getTokenFromStoorage = JSON.parse(localStorage.getItem('user')) 
 const initState = {
     user: getTokenFromStoorage,
@@ -106,13 +107,15 @@ export const authSlice = createSlice({
                 state.isLoading = false
                 state.isSuccess = true
                 state.createUser = action.payload
+                toast.success("User Created !!!")
+                state.message = ""
             })
             .addCase(createUser.rejected,(state,action)=>{
                 console.log(action)
                 state.isLoading =false
                 state.isSuccess=false
                 state.isError=true
-                state.message = ''
+                state.message = action.payload.response.data.msg
             })
             .addCase(loginUser.pending,(state)=>{
                 state.isLoading = true

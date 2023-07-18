@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import Avatar from '../Avatar'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAuser } from '../../features/auth/authSlice'
-import { createmessage, getchatUser, getmessage } from '../../features/chat/chatSlice'
+import { createmessage, getchatUser, getmessage, hideconversation } from '../../features/chat/chatSlice'
 import InputEmoji from 'react-input-emoji'
 import moment from 'moment'
 import { useRef } from "react";
 import './style.css'
+import {IoReturnDownBack} from 'react-icons/io5'
+import { Link } from 'react-router-dom'
 const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage,socket}) => {
     console.log(userDataId)
    
@@ -21,9 +23,10 @@ const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage,sock
     const userId = useSelector(state=>state?.auth?.user)
     const[filterData,setFilterData] = useState([])
     console.log(userDataId)
+    const [userChat,setUserChat] = useState({})
     useEffect(()=>{
 // alert(JSON.stringify({aaaaaaaaaaaa:chat?._id}))
-
+  
 if(userDataId){
     let filteredArray= [];
     // dispatch(getAuser(userDataId))
@@ -33,13 +36,19 @@ if(userDataId){
     dispatch(getchatUser(userDataId))
 }
 
-    },[userDataId,dispatch])
+ const filterData = dataUserId?.filter((user)=>user?._id === userDataId)
+setUserChat(filterData[0])
+
+    },[userDataId,dispatch,dataUserId])
+    console.log(userChat)
 const chatConv = useSelector(state=>state?.chat?.conversation)
 const[chatId,setChatId] = useState(null)
-useEffect(() => {
-   console.log("receipt" + userDataId)
-   console.log("chat by user" + JSON.stringify(chatConv))
-  }, [userDataId,chatConv]);
+// useEffect(() => {
+//    console.log("receipt" + userDataId)
+//    if(dataUserId){
+//     dispatch(getAuser(userDataId))
+//    }
+//   }, [userDataId,dispatch]);
 useEffect(()=>{
  const filter =  chatConv?.filter((x)=>(x?.members?.includes(userId?._id))) 
  setChatId(filter[0]?._id)
@@ -116,27 +125,13 @@ useEffect(() => {
             <>
               {/* chat-header */}
               <div className="chat-header">
-                {/* <div className="follower">
-                  <div>
-                    <img
-                      src={
-                        userData?.profilePicture
-                          ? process.env.REACT_APP_PUBLIC_FOLDER +
-                            userData.profilePicture
-                          : process.env.REACT_APP_PUBLIC_FOLDER +
-                            "defaultProfile.png"
-                      }
-                      alt="Profile"
-                      className="followerImage"
-                      style={{ width: "50px", height: "50px" }}
-                    />
-                    <div className="name" style={{ fontSize: "0.9rem" }}>
-                      <span>
-                        {userData?.firstname} {userData?.lastname}
-                      </span>
-                    </div>
-                  </div>
-                </div> */}
+             <div className='d-flex align-items-center gap-10'>
+          <Link onClick={()=>dispatch(hideconversation())}>
+          <span className='d-flex align-items-center justify-content-center' style={{width:'40px',height:'40px' , borderRadius:'50%' ,background:'#b4e7ea' ,border:'2px solid white',boxShadow:'0 0 10px #eee'}}> <IoReturnDownBack  color='white' className='fs-2'/></span>
+          </Link>
+             <Avatar showname={true} badge={false} styled={{fontSize:'12px'}} widthAndHeight={{width:'40px',height:'40px'}} com={userChat} />
+             
+             </div>
                 <hr
                   style={{
                     width: "95%",
