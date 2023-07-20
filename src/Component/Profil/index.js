@@ -26,7 +26,7 @@ const Profil = () => {
       setShowModal(false)
     }
     const navigate = useNavigate()
-    const dataUser = useSelector(state=>state?.auth?.dataUserId)
+    const dataUser = useSelector(state=>state?.auth?.chatParPerson)
     const[userProfile,setUserProfile] = useState(null)
     useEffect(()=>{
    dataUser && dataUser?.forEach((element,index) =>{

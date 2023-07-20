@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react'
 import Avatar from '../Avatar'
 import { useDispatch, useSelector } from 'react-redux'
 import { getAuser } from '../../features/auth/authSlice'
-import { createmessage, getchatUser, getmessage, hideconversation } from '../../features/chat/chatSlice'
+import { createmessage, findConversation, getchatUser, getmessage, hideconversation } from '../../features/chat/chatSlice'
 import InputEmoji from 'react-input-emoji'
 import moment from 'moment'
 import { useRef } from "react";
 import './style.css'
 import {IoReturnDownBack} from 'react-icons/io5'
 import { Link } from 'react-router-dom'
-const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage,socket}) => {
+const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage,socket,isScreenSmall}) => {
     console.log(userDataId)
-   
+
     const dispatch = useDispatch()
     // useEffect(()=>{
     //   console.log(chat)
@@ -21,40 +21,35 @@ const ChatBox = ({chat,currentUser,userDataId,setSendMessage,receiveMessage,sock
     // },[chat,dispatch,currentUser])
     const {dataUserId} = useSelector(state=>state?.auth)
     const userId = useSelector(state=>state?.auth?.user)
-    const[filterData,setFilterData] = useState([])
+    const chatConversationState = useSelector(state=>state?.auth?.chatParPerson)
+
     console.log(userDataId)
     const [userChat,setUserChat] = useState({})
-    useEffect(()=>{
-// alert(JSON.stringify({aaaaaaaaaaaa:chat?._id}))
-  
-if(userDataId){
-    let filteredArray= [];
-    // dispatch(getAuser(userDataId))
-    //  filteredArray = dataUserId.filter(item => item._id === userDataId);
-    // setFilterData(filteredArray)
+
+   
+   useEffect(()=>{
     console.log(userDataId)
-    dispatch(getchatUser(userDataId))
-}
+  
+      const filtered = (chatConversationState?.filter((user)=>user?._id === userDataId))
+      setUserChat(filtered[0])
+    
+   
+   
+   },[chatConversationState,userDataId])
+   console.log(userChat)
 
- const filterData = dataUserId?.filter((user)=>user?._id === userDataId)
-setUserChat(filterData[0])
-
-    },[userDataId,dispatch,dataUserId])
-    console.log(userChat)
-const chatConv = useSelector(state=>state?.chat?.conversation)
-const[chatId,setChatId] = useState(null)
 // useEffect(() => {
 //    console.log("receipt" + userDataId)
 //    if(dataUserId){
 //     dispatch(getAuser(userDataId))
 //    }
 //   }, [userDataId,dispatch]);
-useEffect(()=>{
- const filter =  chatConv?.filter((x)=>(x?.members?.includes(userId?._id))) 
- setChatId(filter[0]?._id)
- console.log(chatId)
-},[chatConv,userId])
-console.log(chatId)  
+// useEffect(()=>{
+//  const filter =chatConv &&  chatConv?.filter((x)=>(x?.members?.includes(userId?._id))) 
+//  setChatId(filter[0]?._id)
+
+// },[chatConv,userId])
+// console.log(chatId)  
   // useEffect(() => {
   //   if (chatId !== null && userDataId) {
   //     console.log(chatId);
@@ -64,19 +59,30 @@ console.log(chatId)
   //   }
   // }, [chatId, dispatch,chatConv?._id,userDataId]);
 
-useEffect(() => {
-    if (chatId !== undefined) {
-      console.log(chatId);
-      dispatch(getmessage(chatId));
-    }else if(chatId === undefined ){
-      console.log("pas de chat")
-    }
-  }, [chatId, dispatch]);
+// useEffect(() => {
+//     if (chatId) {
+//       console.log(chatId);
+//       dispatch(getmessage(chatId));
+//     }else if(chatId === null || undefined ){
+//       console.log("pas de chat")
+//     }
+//   }, [chatId, dispatch]);
      const messages = useSelector(state=>state?.chat?.getedmessage)
        useEffect(()=> {
     scroll.current?.scrollIntoView({ behavior: "smooth" });
   },[messages])
-
+  const findConversations = useSelector(state=>state?.chat?.findConversation)
+  useEffect(() => {
+    dispatch(findConversation({ firstId: userId?._id, secondId: userDataId }));
+  }, [dispatch, userId, userDataId]);
+  
+  // Deuxième useEffect pour dispatcher getmessage une fois findConversations est mis à jour
+  useEffect(() => {
+    if (findConversations && Object.keys(findConversations).length > 0) {
+      dispatch(getmessage(findConversations?._id));
+    }
+  }, [dispatch, findConversations]);
+  
      console.log(messages)
      const [newMessage, setNewMessage] = useState("");
      const handleChange = (newMessage)=> {
@@ -87,7 +93,7 @@ useEffect(() => {
         const _message = {
           senderId : userId?._id,
           text: newMessage,
-          chatId:chatId ,
+          chatId:findConversations?._id ,
       }
     
       console.log(_message)
@@ -96,15 +102,16 @@ useEffect(() => {
       console.log(userDataId)
       setSendMessage({_message,receiverId:userDataId})
       setTimeout(()=>{
-        dispatch(getmessage(chatId))
+        dispatch(getmessage(findConversations?._id))
       },300)
     }
+    console.log(userDataId)
     useEffect(() => {
       if (socket !== null) {
         socket.on("receive-message", (data) => {
           console.log("Message reçu :", data);
           // Effectuez les actions souhaitées en fonction des données reçues
-          dispatch(getmessage(chatId));
+          dispatch(getmessage(findConversations?._id));
         });
       }
     
@@ -114,17 +121,17 @@ useEffect(() => {
           socket.off("receive-message");
         }
       };
-    }, [socket, chatId, dispatch]);
+    }, [socket,findConversations, dispatch]);
     
       const scroll = useRef();
       const imageRef = useRef();
     return (
         <>
-        <div className="ChatBox-container">
+        <div className={`${isScreenSmall ? 'bg-transparent xxx' : 'ChatBox-container'}`}>
           {chat ? (
             <>
-              {/* chat-header */}
-              <div className="chat-header">
+             
+           <div className="chat-header">
              <div className='d-flex align-items-center gap-10'>
           <Link onClick={()=>dispatch(hideconversation())}>
           <span className='d-flex align-items-center justify-content-center' style={{width:'40px',height:'40px' , borderRadius:'50%' ,background:'#b4e7ea' ,border:'2px solid white',boxShadow:'0 0 10px #eee'}}> <IoReturnDownBack  color='white' className='fs-2'/></span>
@@ -141,7 +148,7 @@ useEffect(() => {
                 />
               </div>
               {/* chat-body */}
-              <div className="chat-body" >
+              <div className={'chat-body'} >
                 { messages && messages?.map((message) => (
                   <>
                     <div ref={scroll}
@@ -151,6 +158,10 @@ useEffect(() => {
                           : "message"
                       }
                     >
+                    
+                       {  message.senderId === currentUser ? <Avatar statu={true} showname={true} badge={false} styled={{fontSize:'9px'}} widthAndHeight={{width:'40px',height:'40px'}} com={userId} />
+                      :  <Avatar showname={true} statu={true} badge={false} styled={{fontSize:'9px'}} widthAndHeight={{width:'40px',height:'40px'}} com={userChat} />
+                      } 
                       <span>{message.text}</span>{" "}
                       <span>{moment(message.createdAt).fromNow()}</span>
                     </div>
@@ -164,7 +175,7 @@ useEffect(() => {
                   value={newMessage}
                   onChange={handleChange}
                 />
-                <button className="btn btn-outline-primary " onClick = {handleSend}>Send</button>
+                <button className="btn btn-outline-primary " onClick={handleSend}>Send</button>
                 <input
                   type="file"
                   name=""

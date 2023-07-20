@@ -49,6 +49,7 @@ export const  getchatUser = createAsyncThunk('/chat/user',async(id,thunkAPI)=>{
   })
   export const showconversation = createAction('/chat/showconversation')
   export const hideconversation = createAction('/chat/hideconversation')
+  export const resetALLConversation = createAction('/chat/resetchat')
 export const chatSlice = createSlice({
     name: 'chat',
     initialState: initState,
@@ -140,6 +141,7 @@ export const chatSlice = createSlice({
                             state.hideconversation = true
                             state.showconversation = false
                         })
+                        
                 
             
          

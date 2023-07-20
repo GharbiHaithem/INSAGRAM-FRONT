@@ -4,7 +4,7 @@ import moment from 'moment'
 import { Link, useParams } from 'react-router-dom'
 import MessageSingleUser from '../MessageSingleUser'
 
-const Avatar = ({showMsg,isScreenSmall,badge,status,online,com,styled,show,children,styledavatar ,userDataId,link,onClick,styledP,xxx,widthAndHeight,showname}) => {
+const Avatar = ({statu,showMsg,isScreenSmall,badge,status,online,com,styled,show,children,styledavatar ,userDataId,link,onClick,styledP,xxx,widthAndHeight,showname}) => {
   const[addClass,setAddClass] = useState(false)
   const[connecte,setConnected] = useState(false)
   useEffect(()=>{
@@ -39,11 +39,11 @@ if(com?._id === userDataId){
         }
       {showname && <div className={`d-flex flex-column ${isScreenSmall ? '' : 'gap-10'}`}>
         <Link to={link}><p style={styled} className=' mb-0 fs-7'>{com?.lastname + " " + com?.firstname}</p></Link>
-       {showMsg && isScreenSmall && userDataId === com?._id && <MessageSingleUser user={userDataId} /> }
-        {connecte  && badge===true && online ? <p className={`${isScreenSmall ? 'd-none' : 'mb-0 text-muted'}`} style={{fontSize:'11px'}} >Online</p> : <p  className={`${isScreenSmall ? 'd-none' : 'mb-0 text-muted'}`} style={{fontSize:'12px'}}>HorsLine</p>}
+       {showMsg && isScreenSmall && userDataId === com?._id && <MessageSingleUser  user={userDataId} /> }
+       { online ? <p className={`${statu ?'d-none' : 'mb-0 text-muted'}`} style={{fontSize:'11px'}} >Online</p> : <p className={`${statu ?'d-none' : 'mb-0 text-muted'}`}style={{fontSize:'12px'}}>HorsLine</p>}
         </div>}
       </div>
-    {show &&  <div className='text-muted fs-7' style={{width:'150px'}}><span className='mb-0' style={styled}>{moment(com?.createdAt).fromNow()}</span></div>}
+    {show &&  <div className='text-muted ' style={{width:'150px'}}><span className='mb-0' style={styled}>{moment(com?.createdAt).fromNow()}</span></div>}
      {children}
       </div>
     )

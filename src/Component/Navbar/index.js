@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import './style.css'
-import insta from '../../assets/png-clipart-letter-instagram-font-instagram-text-logo-removebg-preview(1).png'
+import gh from '../../assets/Gh.jpg'
 import { Link, json, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Typeahead } from 'react-bootstrap-typeahead';
@@ -16,7 +16,7 @@ import Avatar2 from '../Avatar2'
 import Avatar from '../Avatar'
 import { logout } from '../../features/auth/authSlice'
 import {FiInstagram} from 'react-icons/fi'
-import { hideconversation } from '../../features/chat/chatSlice'
+import { hideconversation, resetALLConversation } from '../../features/chat/chatSlice'
 const Navbar = ({socket}) => {
   
     const location = useLocation()
@@ -94,15 +94,16 @@ disconnectButton.addEventListener('click', () => {
   socket.disconnect();
   console.log('Socket déconnecté !');
   dispatch(logout())
+  dispatch(resetALLConversation())
   navigate('/login')
 });
 }
     return (
         <div className='container'>
-            <div className='navbar-wrapper'>
+            <div className='navbar-wrapper my-4'>
     
                 <Link  to={'/'} className={`${search ? 'xxx' : `${user === null ? 'not-connected' : 'img-box'}`}`}>
-                {isScreenSmall ?  <FiInstagram style={{transform:"translateY:(70px)"}} /> : <img src={ insta} style={{ color: "red" }} alt='instagram' />}    
+                {isScreenSmall ?  <FiInstagram style={{transform:"translateY:(70px)"}} /> : <img src={ gh} style={{borderRadius:'50%',width:'100px',height:'100px' , objectFit:'cover' }} alt='instagram' />}    
                 </Link>
 
                 {user === null ? <>
@@ -148,7 +149,7 @@ disconnectButton.addEventListener('click', () => {
                  </Dropdown.Toggle>  
                         } 
 
-                            <Dropdown.Menu>
+                            <Dropdown.Menu  style={{zIndex:'100'}}>
                                 <Dropdown.Item   className='p-3'onClick={()=>setConfigState(true)} ><LuSettings2 className='fs-4' />&nbsp;&nbsp; Settings</Dropdown.Item>
                                 <Dropdown.Item  onClick={handleDisconnecte} className='p-3' id='disconnect-button'><AiOutlineLogout className='fs-4'  />&nbsp;&nbsp;Logout</Dropdown.Item>
                           

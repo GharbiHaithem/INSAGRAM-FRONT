@@ -7,8 +7,11 @@ import { useFormik } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
 import { loginUser } from '../../features/auth/authSlice'
 import backgroundImage from '../../assets/wave.svg'
+import {MdAlternateEmail} from 'react-icons/md'
 import oo from '../../assets/wave (1).svg'
 import {toast} from 'react-toastify'
+import {PiPasswordLight} from 'react-icons/pi'
+
 const Login = ({socket}) => {
     const dispatch = useDispatch()
     const msg = useSelector(state=>state?.auth?.message)
@@ -52,12 +55,14 @@ const Login = ({socket}) => {
         }
     })
   useEffect(()=>{
+   if(socket !== null){
     socket.on('userListUpdated', (updatedUserList) => {
         // Mettez à jour votre interface utilisateur avec la liste des utilisateurs en ligne (updatedUserList)
         console.log('Liste des utilisateurs mise à jour :', updatedUserList);
       
         // Par exemple, vous pouvez mettre à jour votre interface en utilisant React ou d'autres frameworks selon votre configuration.
       });
+   }
   },[])
 
 useEffect(() => {
@@ -97,11 +102,11 @@ useEffect(()=>{
                 <p className='text-center'></p>
                 <form className='d-flex flex-column gap-10 ' onSubmit={formik.handleSubmit} >
 
-                    <CustomerInput type={'email'} title={'Email'} name='email' className={'form-control'} value={formik.values.email} onChange={formik.handleChange('email')} placeholder={'Email'} />
+                  <CustomerInput type={'email'} icon={<MdAlternateEmail/>} title={'Email'} name='email' className={'form-control'} value={formik.values.email} onChange={formik.handleChange('email')} placeholder={'Email'} />
                     {formik.touched.email && formik.errors.email ? <span className='p-1 badge bg-danger rounded-2'>
                         {formik.errors.email}
                     </span> : null}
-                    <CustomerInput colorText={{color:"#c33083"}} type={'password'} title={'Password'} name='password' className={'form-control'} value={formik.values.password} onChange={formik.handleChange('password')} placeholder={'Password'} />
+                    <CustomerInput  icon={<PiPasswordLight/>}  colorText={{color:"#c33083"}} type={'password'} title={'Password'} name='password' className={'form-control'} value={formik.values.password} onChange={formik.handleChange('password')} placeholder={'Password'} />
                     {formik.touched.password && formik.errors.password ? <span className='p-1 badge bg-danger rounded-2'>
                         {formik.errors.password}
                     </span> : null}

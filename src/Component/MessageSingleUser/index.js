@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { findConversation, getmessage } from '../../features/chat/chatSlice'
 
-const MessageSingleUser = ({user}) => {
+const MessageSingleUser = ({user,x}) => {
   const chatUser = useSelector(state=>state?.chat?.conversation)
   const userstate = useSelector(state=>state?.auth?.user)
   const findconversationstate = useSelector(state=>state?.chat?.findConversation)
@@ -19,12 +19,14 @@ const MessageSingleUser = ({user}) => {
  }
 
   },[dispatch])
-  const sortedMessages = [...messages];
-  const res = sortedMessages.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const sortedMessages = Array.isArray(messages)
+  ? [...messages].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  : [];
+
     return (
         <div>
           
-      <p style={{fontSize:'11px',fontWeight:'400'}}>{(res[0]?.text)}</p>
+      <p className='fs-7' style={{fontSize:'20px !important' }}>{(sortedMessages[0]?.text)}</p>
         </div>
     )
 }

@@ -104,8 +104,32 @@ const Chat = ({ socket,onlineUsers }) => {
     dispatch(getchatUser(userstate?._id))
   }, [dispatch, userstate?._id])
   const chat = useSelector(state => state?.chat?.conversation)
-  const [currentChat, setCurrentChat] = useState(null)
+  useEffect(()=>{
+ if(chat){
+  const y = chat?.map((x)=>(x?.members.filter(i=> i !== userstate?._id) ))
+  const uniqueNestedArrays = [...new Set(y.map(JSON.stringify))].map(JSON.parse);
+  console.log(uniqueNestedArrays);
+  if(uniqueNestedArrays){
+  // Utilisation de Promise.all() pour attendre que toutes les actions soient terminées
+const promises = uniqueNestedArrays.map(payload => dispatch(getAuser(payload)));
+Promise.all(promises)
+  .then(() => {
+    // Toutes les actions sont terminées
+    console.log('Toutes les actions sont terminées.');
+  })
+  .catch(error => {
+    // Gérer les erreurs éventuelles
+    console.error('Une erreur s\'est produite lors du dispatch des actions :', error);
+  });
 
+  }
+ }
+  },[chat,userstate,dispatch])
+  useEffect(()=>{
+   
+  },[])
+  const [currentChat, setCurrentChat] = useState(null)
+const chatsUser = useSelector(state=>state?.auth?.chatParPerson)
   const handleConversationClick = (data) => {
     setCurrentChat(data);
     console.log(data)
@@ -155,7 +179,7 @@ const Chat = ({ socket,onlineUsers }) => {
               </div>
             </div>
             {
-              chat && chat?.map((data, index) => {
+              chatsUser && chatsUser?.map((data, index) => {
                 let isFirstChat = index === 0;
                 return (
                   <div key={index} onClick={() =>{ 
@@ -174,7 +198,7 @@ const Chat = ({ socket,onlineUsers }) => {
         <div className={`body-conversation ${ showhideconversation?.showconversation  ? 'd-block' : isScreenSmall && 'd-none'} ` }>
           <div>
          
-            <ChatBox socket={socket} chat={currentChat} setSendMessage={setSendMessage} receiveMessage={receiveMessage} userDataId={userDataId} currentUser={userstate?._id} />
+            <ChatBox socket={socket} isScreenSmall={isScreenSmall} chat={currentChat} setSendMessage={setSendMessage} receiveMessage={receiveMessage} userDataId={userDataId} currentUser={userstate?._id} />
           </div>
         </div>
 

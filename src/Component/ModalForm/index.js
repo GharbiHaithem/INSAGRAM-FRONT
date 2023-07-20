@@ -103,8 +103,7 @@ const FormModal = ({ open, setOpen, closeModal, setShowModal }) => {
                 </div>
                 <div className='row'>
                     <div className='bloc-img d-flex align-items-center  col-md-6  gap-10  col-sm-6 col-lg-6'  >
-                    <progress value={uploadProgressValue} max="100" />
-          <span>{uploadProgressValue}%</span>
+                
                         {
                             uploadState && uploadState?.map((item, index) => {
                                 return (

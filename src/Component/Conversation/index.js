@@ -5,9 +5,12 @@ import Avatar from '../Avatar'
 
 const Conversation = ({children,online,chatConversation,userId,isFirstChat,setUserDataId,userDataId,setCliked,cliked,setAddClass,onClick,isScreenSmall}) => {
     const dispatch = useDispatch()
-    const[profileUser,setProfileUser] = useState(null)
   
+    const[allConversation,setAllConversation] =useState([])
+    const[profileUser,setProfileUser] = useState(null)
+  console.log(userId)
     useEffect(()=>{
+      console.log(chatConversation);
       console.log(online)
     const  user = chatConversation?.members?.find((id)=>id !== userId)
     console.log(user);
@@ -26,26 +29,60 @@ const Conversation = ({children,online,chatConversation,userId,isFirstChat,setUs
       checkUser();
     }
     },[chatConversation, dispatch, userId, profileUser])
-    const data = useSelector(state=>state?.auth?.dataUserId)
-    console.log(data)
-    const uniqueIds = [...new Set(data.map(x => x.id))];
-    const uniqueData = data.filter(x => uniqueIds.includes(x.id));
+    function removeDuplicateObjects(arr) {
+      const uniqueObjectsById = {};
+      const uniqueArray = [];
+    
+      arr.forEach(item => {
+        if (!uniqueObjectsById[item._id]) {
+          uniqueObjectsById[item._id] = true;
+          uniqueArray.push(item);
+        }
+      });
+    
+      return uniqueArray;
+    }
+    const conversations = useSelector(state=>state?.chat?.conversation)
+     const data = useSelector(state=>state?.auth?.chatParPerson)
+    // console.log(data)
+    // const uniqueIds =data && [...new Set(data.map(x => x?._id))];
+    // const uniqueData =data && data?.filter(x => uniqueIds.includes(x?._id));
    useEffect(()=>{
-    console.log(userDataId)
-    console.log(cliked) 
-  },[userDataId])
-   console.log(uniqueData)
+    
+   const filtreData = conversations?.filter((conv)=>conv?.members.includes(userId))
+   console.log(filtreData)
+  const y = filtreData?.map((x)=>(x?.members.filter(i=> i !== userId) ))
+console.log(y);
+let mergedArray = [];
+
+for (const array of y) {
+  mergedArray = [...mergedArray, ...array];
+}
+const uniqueArray = Array.from(new Set(mergedArray));
+
+console.log(uniqueArray);
+for(let i = 0 ; i<uniqueArray.length ;i++){
+  dispatch(getAuser(uniqueArray[i]))
+}
+  },[conversations,userId,dispatch])
+//  useEffect(()=>{
+//   const xx =data?.filter((chat)=>chat !== null)
+//   console.log(xx)
+//   const cleanedPayload = removeDuplicateObjects(xx);
+//   console.log(cleanedPayload);
+//   setAllConversation(cleanedPayload)
+//  },[data])
      return (
         <div >
     
             {
-           uniqueData.map(x => {
+           data?.map(x => {
             return (
             
             
                 isFirstChat && <Avatar
                 isScreenSmall={isScreenSmall}
-                key={x.id}
+                key={x._id}
                 showname={true}
                 styledP={{height:"100px"}}
                 cliked={cliked}
@@ -54,7 +91,7 @@ const Conversation = ({children,online,chatConversation,userId,isFirstChat,setUs
                 showMsg={true}
                 widthAndHeight={{width:isScreenSmall? '40px' : '60px',height:isScreenSmall? '40px' : '60px'}}
                 onClick={()=>{
-                  
+                  alert(x?._id)
                   setUserDataId(x?._id)
                 }}
                 badge={true}
@@ -66,7 +103,7 @@ const Conversation = ({children,online,chatConversation,userId,isFirstChat,setUs
                 status={'position-relative'}
               />
        
-                         
+               
             )
           })
        

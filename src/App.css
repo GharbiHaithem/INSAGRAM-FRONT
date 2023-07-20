@@ -4,6 +4,9 @@
 *{
   font-family: 'Cairo', sans-serif;
 }
+.css-s18byi{
+  background-color: transparent  !important;
+}
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
